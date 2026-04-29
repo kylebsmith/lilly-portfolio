@@ -1,0 +1,5 @@
+title: Sketchbook
+category: sketch-book
+year: 2025
+layout: gallery
+blurb: Pages from studio sketchbooks, lab studies, and the bound book.

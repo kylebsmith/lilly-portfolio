@@ -1,0 +1,104 @@
+import type { Metadata } from "next";
+import {
+  Bricolage_Grotesque,
+  Geist,
+  Geist_Mono,
+  Instrument_Serif,
+  Caveat,
+} from "next/font/google";
+import { site } from "@content/site";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
+import Cursor from "@/components/Cursor";
+import PageTransition from "@/components/PageTransition";
+import ScrollProgress from "@/components/ScrollProgress";
+import ClickSparkle from "@/components/ClickSparkle";
+import LightboxProvider from "@/components/Lightbox";
+import CatchToast from "@/components/CatchToast";
+import "./globals.css";
+
+// Primary display — variable axes (wdth, wght, opsz). Chunky-confident
+// at high weight + 100 width; elegant when extended. The contemporary
+// "post-Inter" display face.
+const display = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-display-loaded",
+  display: "swap",
+  axes: ["wdth", "opsz"],
+});
+
+// Italic accent — used only for the "personality moments" (bursts of
+// italic in headlines).
+const italic = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-italic-loaded",
+  display: "swap",
+});
+
+const body = Geist({
+  subsets: ["latin"],
+  variable: "--font-body-loaded",
+  display: "swap",
+});
+
+const mono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-loaded",
+  display: "swap",
+});
+
+const hand = Caveat({
+  subsets: ["latin"],
+  variable: "--font-hand-loaded",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
+  title: {
+    default: `${site.name} — ${site.tagline}`,
+    template: `%s · ${site.name}`,
+  },
+  description: site.description,
+  openGraph: {
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
+    url: site.url,
+    siteName: site.name,
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
+  icons: { icon: "/favicon.svg" },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${display.variable} ${italic.variable} ${body.variable} ${mono.variable} ${hand.variable}`}
+    >
+      <body>
+        <SmoothScroll />
+        <ScrollProgress />
+        <Cursor />
+        <ClickSparkle />
+        <LightboxProvider>
+          <Nav />
+          <PageTransition>
+            <main className="relative z-10">{children}</main>
+          </PageTransition>
+          <Footer />
+        </LightboxProvider>
+        <CatchToast />
+      </body>
+    </html>
+  );
+}

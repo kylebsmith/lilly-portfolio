@@ -1,0 +1,892 @@
+{
+  "projects": [
+    {
+      "order": 1,
+      "slug": "dnd-style-frame",
+      "folder": "01_dnd-style-frame",
+      "title": "Dungeons & Dragons — Style Frame",
+      "category": "character-design",
+      "year": 2026,
+      "layout": "standard",
+      "medium": null,
+      "size": "16 × 9 in",
+      "date": null,
+      "copyright": "© 2025 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/01_dnd-style-frame/cover.jpg",
+          "w": 4800,
+          "h": 2700,
+          "medium": null,
+          "size": "16 × 9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": "© 2025 Lilly Patterson",
+          "polished": false
+        },
+        {
+          "src": "/work/01_dnd-style-frame/azael-design.jpg",
+          "w": 1928,
+          "h": 2700,
+          "medium": null,
+          "size": "6.4 × 9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/01_dnd-style-frame/oop.jpg",
+          "w": 4800,
+          "h": 2700,
+          "medium": null,
+          "size": "16 × 9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": "© 2025 Lilly Patterson",
+          "polished": false
+        }
+      ],
+      "videos": []
+    },
+    {
+      "order": 2,
+      "slug": "breath-of-life",
+      "folder": "02_breath-of-life",
+      "title": "Breath of Life",
+      "category": "character-design",
+      "year": 2026,
+      "blurb": "A creature design and style frame for a Magic the Gathering card.",
+      "layout": "standard",
+      "medium": "Digital",
+      "size": "6.2 × 8.6 in",
+      "date": "January 2026",
+      "copyright": "© 2026 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/02_breath-of-life/cover.jpg",
+          "w": 2165,
+          "h": 3000,
+          "medium": "Digital",
+          "size": "6.2 × 8.6 in",
+          "date": "January 2026",
+          "description": "A creature design and style frame for a Magic the Gathering card.",
+          "xmpTitle": "Breath of Life- Biomechanical Leviathan",
+          "copyright": "© 2026 Lilly Patterson",
+          "polished": true
+        },
+        {
+          "src": "/work/02_breath-of-life/mockup.png",
+          "w": 1500,
+          "h": 2100,
+          "medium": null,
+          "size": null,
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": []
+    },
+    {
+      "order": 4,
+      "slug": "lost-in-a-dream",
+      "folder": "04_lost-in-a-dream",
+      "title": "Lost In A Dream",
+      "category": "environments",
+      "year": 2026,
+      "blurb": "Surrealist illustration exploring \"lost in a Dream\"",
+      "layout": "standard",
+      "medium": "Digital",
+      "size": "8.6 × 6.5 in",
+      "date": "January 2026",
+      "copyright": "© 2026 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/04_lost-in-a-dream/cover.jpg",
+          "w": 3000,
+          "h": 2265,
+          "medium": "Digital",
+          "size": "8.6 × 6.5 in",
+          "date": "January 2026",
+          "description": "Surrealist illustration exploring \"lost in a Dream\"",
+          "xmpTitle": "Lost In A Dream",
+          "copyright": "© 2026 Lilly Patterson",
+          "polished": true
+        },
+        {
+          "src": "/work/04_lost-in-a-dream/thumbnails.jpg",
+          "w": 4900,
+          "h": 3700,
+          "medium": null,
+          "size": "12.3 × 9.3 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": [
+        {
+          "src": "/work/04_lost-in-a-dream/process-clip.mp4",
+          "label": "process clip",
+          "w": 1280,
+          "h": 2276
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "slug": "environment-study",
+      "folder": "05_environment-study",
+      "title": "Environment Study",
+      "category": "environments",
+      "year": 2026,
+      "layout": "standard",
+      "medium": "Digital",
+      "size": "7.8 × 11.5 in",
+      "date": null,
+      "copyright": "© 2026 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/05_environment-study/cover.jpg",
+          "w": 2716,
+          "h": 4011,
+          "medium": "Digital",
+          "size": "7.8 × 11.5 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": "Enviromental Scene",
+          "copyright": "© 2026 Lilly Patterson",
+          "polished": true
+        },
+        {
+          "src": "/work/05_environment-study/study-01.jpg",
+          "w": 5100,
+          "h": 7019,
+          "medium": null,
+          "size": "8.5 × 11.7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/05_environment-study/study-02.jpg",
+          "w": 4506,
+          "h": 6047,
+          "medium": null,
+          "size": "7.5 × 10.1 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/05_environment-study/study-03.jpg",
+          "w": 4506,
+          "h": 6047,
+          "medium": null,
+          "size": "7.5 × 10.1 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/05_environment-study/thumbnails.jpg",
+          "w": 3869,
+          "h": 2224,
+          "medium": null,
+          "size": "11.1 × 6.4 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": [
+        {
+          "src": "/work/05_environment-study/magic-city-painting.mp4",
+          "label": "magic city painting",
+          "w": 1080,
+          "h": 1920
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "slug": "new-yorker",
+      "folder": "06_new-yorker",
+      "title": "The New Yorker — Full Page",
+      "category": "book-illustration",
+      "year": 2026,
+      "layout": "standard",
+      "medium": null,
+      "size": "8 × 11 in",
+      "date": null,
+      "copyright": "© Lilly Patterson 2025",
+      "images": [
+        {
+          "src": "/work/06_new-yorker/cover.jpg",
+          "w": 2400,
+          "h": 3300,
+          "medium": null,
+          "size": "8 × 11 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": "© Lilly Patterson 2025",
+          "polished": false
+        },
+        {
+          "src": "/work/06_new-yorker/mockup.jpg",
+          "w": 4000,
+          "h": 3000,
+          "medium": null,
+          "size": "13.3 × 10 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": []
+    },
+    {
+      "order": 7,
+      "slug": "recipe-of-a-culture",
+      "folder": "07_recipe-of-a-culture",
+      "title": "The Recipe of a Culture",
+      "category": "book-illustration",
+      "year": 2026,
+      "blurb": "Spot Illustrations that depict our persional culture, being from colorado this is Ski Culture.",
+      "layout": "standard",
+      "medium": "Digital",
+      "size": "8.6 × 6.6 in",
+      "date": "January 2026",
+      "copyright": "© 2026 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/07_recipe-of-a-culture/cover.jpg",
+          "w": 3000,
+          "h": 2318,
+          "medium": "Digital",
+          "size": "8.6 × 6.6 in",
+          "date": "January 2026",
+          "description": "Spot Illustrations that depict our persional culture, being from colorado this is Ski Culture.",
+          "xmpTitle": "Recipe of Culture- Spot Illustrations",
+          "copyright": "© 2026 Lilly Patterson",
+          "polished": true
+        }
+      ],
+      "videos": []
+    },
+    {
+      "order": 8,
+      "slug": "how-i-hold-it-together",
+      "folder": "08_how-i-hold-it-together",
+      "title": "How I Hold It Together",
+      "category": "book-illustration",
+      "year": 2026,
+      "layout": "standard",
+      "medium": null,
+      "size": "11 × 8.5 in",
+      "date": null,
+      "copyright": null,
+      "images": [
+        {
+          "src": "/work/08_how-i-hold-it-together/cover.png",
+          "w": 3850,
+          "h": 2975,
+          "medium": null,
+          "size": "11 × 8.5 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/08_how-i-hold-it-together/panel-bath.png",
+          "w": 1221,
+          "h": 944,
+          "medium": null,
+          "size": "3.5 × 2.7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/08_how-i-hold-it-together/panel-cat.png",
+          "w": 1345,
+          "h": 1039,
+          "medium": null,
+          "size": "3.8 × 3 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/08_how-i-hold-it-together/panel-tea.png",
+          "w": 991,
+          "h": 1386,
+          "medium": null,
+          "size": "2.8 × 4 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": []
+    },
+    {
+      "order": 9,
+      "slug": "book-spots",
+      "folder": "09_book-spots",
+      "title": "Book Spots",
+      "category": "book-illustration",
+      "year": 2026,
+      "layout": "standard",
+      "medium": "Digital",
+      "size": "18.1 × 8.5 in",
+      "date": null,
+      "copyright": "© 2026 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/09_book-spots/cover.png",
+          "w": 5443,
+          "h": 2550,
+          "medium": "Digital",
+          "size": "18.1 × 8.5 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": "The Girl with the Dragon Tattoo Book Spots",
+          "copyright": "© 2026 Lilly Patterson",
+          "polished": true
+        },
+        {
+          "src": "/work/09_book-spots/mockup.png",
+          "w": 4500,
+          "h": 3000,
+          "medium": null,
+          "size": "15 × 10 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/09_book-spots/spots.jpg",
+          "w": 4223,
+          "h": 2102,
+          "medium": null,
+          "size": "14.1 × 7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/09_book-spots/study-01.jpg",
+          "w": 6649,
+          "h": 4824,
+          "medium": null,
+          "size": "11.1 × 8 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/09_book-spots/study-02.jpg",
+          "w": 6649,
+          "h": 4824,
+          "medium": null,
+          "size": "11.1 × 8 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/09_book-spots/study-03.jpg",
+          "w": 6580,
+          "h": 4936,
+          "medium": null,
+          "size": "11 × 8.2 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/09_book-spots/study-04.jpg",
+          "w": 6985,
+          "h": 5091,
+          "medium": null,
+          "size": "11.6 × 8.5 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": [
+        {
+          "src": "/work/09_book-spots/process-timelapse.mp4",
+          "label": "process timelapse",
+          "w": 1280,
+          "h": 720
+        }
+      ]
+    },
+    {
+      "order": 10,
+      "slug": "girl-with-a-dragon-tattoo",
+      "folder": "10_girl-with-a-dragon-tattoo",
+      "title": "Girl with the Dragon Tattoo — Conceptual Piece",
+      "category": "book-illustration",
+      "year": 2026,
+      "layout": "standard",
+      "medium": null,
+      "size": "11 × 7.2 in",
+      "date": null,
+      "copyright": "© 2026 Lilly Patterson",
+      "images": [
+        {
+          "src": "/work/10_girl-with-a-dragon-tattoo/cover.jpg",
+          "w": 3300,
+          "h": 2171,
+          "medium": null,
+          "size": "11 × 7.2 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": "© 2026 Lilly Patterson",
+          "polished": false
+        },
+        {
+          "src": "/work/10_girl-with-a-dragon-tattoo/mockup.jpg",
+          "w": 6000,
+          "h": 4000,
+          "medium": null,
+          "size": "20 × 13.3 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/10_girl-with-a-dragon-tattoo/study-01.jpg",
+          "w": 6994,
+          "h": 5091,
+          "medium": null,
+          "size": "11.7 × 8.5 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        }
+      ],
+      "videos": [
+        {
+          "src": "/work/10_girl-with-a-dragon-tattoo/process-watercolor.mp4",
+          "label": "process watercolor",
+          "w": 1280,
+          "h": 720
+        }
+      ]
+    },
+    {
+      "order": 11,
+      "slug": "sketchbook",
+      "folder": "11_sketchbook",
+      "title": "Sketchbook",
+      "category": "sketch-book",
+      "year": 2025,
+      "blurb": "Pages from studio sketchbooks, lab studies, and the bound book.",
+      "layout": "gallery",
+      "medium": null,
+      "size": "14.9 × 9.7 in",
+      "date": null,
+      "copyright": null,
+      "images": [
+        {
+          "src": "/work/11_sketchbook/cover.jpg",
+          "w": 4464,
+          "h": 2903,
+          "medium": null,
+          "size": "14.9 × 9.7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-no1.jpg",
+          "w": 5828,
+          "h": 5454,
+          "medium": null,
+          "size": "14.6 × 13.6 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-no2.jpg",
+          "w": 2572,
+          "h": 3600,
+          "medium": null,
+          "size": "6.4 × 9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-no3-01.jpg",
+          "w": 4933,
+          "h": 4340,
+          "medium": null,
+          "size": "8.2 × 7.2 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-no3-02.jpg",
+          "w": 4020,
+          "h": 5419,
+          "medium": null,
+          "size": "6.7 × 9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-no3-03.jpg",
+          "w": 4020,
+          "h": 5419,
+          "medium": null,
+          "size": "6.7 × 9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-notan-01.jpg",
+          "w": 4613,
+          "h": 5952,
+          "medium": null,
+          "size": "7.7 × 9.9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-notan-02.jpg",
+          "w": 4578,
+          "h": 5846,
+          "medium": null,
+          "size": "7.6 × 9.7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-plaster-cast.jpg",
+          "w": 3024,
+          "h": 4032,
+          "medium": null,
+          "size": null,
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-torso-01.jpg",
+          "w": 3024,
+          "h": 4032,
+          "medium": null,
+          "size": null,
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/lab-torso-02.jpg",
+          "w": 3024,
+          "h": 4032,
+          "medium": null,
+          "size": null,
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-blueberries.jpg",
+          "w": 2434,
+          "h": 2160,
+          "medium": null,
+          "size": null,
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-cleaningcart-01.jpg",
+          "w": 2221,
+          "h": 2903,
+          "medium": null,
+          "size": "7.4 × 9.7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-cleaningcart-02.jpg",
+          "w": 4506,
+          "h": 5917,
+          "medium": null,
+          "size": "7.5 × 9.9 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-livingroom.jpg",
+          "w": 4464,
+          "h": 2903,
+          "medium": null,
+          "size": "14.9 × 9.7 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-mugcake.jpg",
+          "w": 3890,
+          "h": 4980,
+          "medium": null,
+          "size": "6.5 × 8.3 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-nude-sitting.jpg",
+          "w": 2402,
+          "h": 3230,
+          "medium": null,
+          "size": null,
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-orchid.jpg",
+          "w": 4447,
+          "h": 4233,
+          "medium": "Digital",
+          "size": "7.4 × 7.1 in",
+          "date": "February 2026",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/mfa-page-01.jpg",
+          "w": 5727,
+          "h": 4479,
+          "medium": null,
+          "size": "9.5 × 7.5 in",
+          "date": null,
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": false
+        },
+        {
+          "src": "/work/11_sketchbook/pages-01.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-03.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-04.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-05.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-06.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-07.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-08.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-09.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-10.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        },
+        {
+          "src": "/work/11_sketchbook/pages-11.jpg",
+          "w": 1592,
+          "h": 2158,
+          "medium": "Digital",
+          "size": "5.3 × 7.2 in",
+          "date": "August 2025",
+          "description": null,
+          "xmpTitle": null,
+          "copyright": null,
+          "polished": true
+        }
+      ],
+      "videos": []
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+title: Breath of Life
+category: character-design
+year: 2026

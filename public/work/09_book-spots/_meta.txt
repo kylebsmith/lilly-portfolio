@@ -1,0 +1,3 @@
+title: Book Spots
+category: book-illustration
+year: 2026
