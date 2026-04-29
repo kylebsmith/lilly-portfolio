@@ -26,12 +26,15 @@ const execFileP = promisify(execFile);
 /**
  * Probe a video for its native pixel dimensions using ffprobe.
  *
- * Falls back to 1280×720 (16:9) if ffprobe isn't on the build host —
- * Vercel's build image doesn't include ffmpeg, so the local manifest
- * (committed to git) is the source of truth for accurate dims, and
- * remote rebuilds get the safe default.
+ * Resolution order:
+ *   1. ffprobe (when available — local Mac, dev workstations)
+ *   2. cached value from the committed manifest (Vercel build env,
+ *      where ffprobe isn't installed but the previous manifest has
+ *      the values from a local push)
+ *   3. 1280×720 (16:9) default — only hits if a brand-new video is
+ *      added on a build host without ffprobe and not yet in cache
  */
-async function probeVideo(filePath) {
+async function probeVideo(filePath, cached) {
   try {
     const { stdout } = await execFileP("ffprobe", [
       "-v", "error",
@@ -43,7 +46,29 @@ async function probeVideo(filePath) {
     const [w, h] = stdout.trim().split("x").map(Number);
     if (Number.isFinite(w) && Number.isFinite(h) && w > 0 && h > 0) return { w, h };
   } catch { /* ffprobe missing or failed — fall through */ }
+  if (cached && cached.w && cached.h) return { w: cached.w, h: cached.h };
   return { w: 1280, h: 720 };
+}
+
+/**
+ * Read whatever manifest is currently on disk and build a lookup of
+ * video src → {w,h}. Used to seed video dimensions when ffprobe isn't
+ * available on the build host.
+ */
+async function loadCachedVideoDims() {
+  const cache = new Map();
+  try {
+    const text = await readFile(OUT, "utf8");
+    const data = JSON.parse(text);
+    for (const p of data.projects ?? []) {
+      for (const v of p.videos ?? []) {
+        if (v.src && Number(v.w) && Number(v.h)) {
+          cache.set(v.src, { w: Number(v.w), h: Number(v.h) });
+        }
+      }
+    }
+  } catch { /* no existing manifest — fine */ }
+  return cache;
 }
 
 const ROOT = fileURLToPath(new URL("../public/work/", import.meta.url));
@@ -312,6 +337,10 @@ async function readImageMeta(filePath) {
  * ──────────────────────────────────────────────────────────── */
 
 async function main() {
+  // Seed video-dim cache from any previous manifest before we overwrite.
+  // This is what makes Vercel deploys preserve the locally-probed dims.
+  const cachedVideoDims = await loadCachedVideoDims();
+
   const folders = (await readdir(ROOT)).sort();
   const projects = [];
 
@@ -357,9 +386,10 @@ async function main() {
     // honor each one's actual aspect ratio (vertical phone footage,
     // 16:9 timelapses, etc. all behave correctly).
     const videos = await Promise.all(videoFiles.map(async (f) => {
-      const dim = await probeVideo(join(dir, f));
+      const src = `/work/${folderName}/${f}`;
+      const dim = await probeVideo(join(dir, f), cachedVideoDims.get(src));
       return {
-        src: `/work/${folderName}/${f}`,
+        src,
         label: f.replace(/\.(mp4|mov|webm)$/i, "").replace(/[-_]+/g, " "),
         w: dim.w,
         h: dim.h,
