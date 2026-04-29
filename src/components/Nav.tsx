@@ -63,7 +63,9 @@ export default function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-40">
       <div className="container-edge mx-auto flex max-w-[1700px] items-center justify-between pt-5 md:pt-7">
-        {/* Wordmark: white on hero, theme-reactive elsewhere */}
+        {/* Wordmark: gold-glow over the hero (pops against the dark artwork
+            and ties to the ✦ icon), theme-reactive elsewhere. Soft drop
+            shadow keeps it legible against bright spots in the artwork. */}
         <Link
           href="/"
           data-cursor
@@ -71,10 +73,12 @@ export default function Nav() {
           onClick={recordClick}
           className={cn(
             "group inline-flex items-baseline gap-1.5 font-display text-base uppercase tracking-[0.18em] transition-colors duration-500",
-            overHero ? "text-white" : "text-[color:var(--fg)]"
+            overHero
+              ? "text-[#e2b865] [text-shadow:_0_2px_18px_rgba(0,0,0,0.55),_0_1px_2px_rgba(0,0,0,0.4)]"
+              : "text-[color:var(--fg)]"
           )}
         >
-          <span className="text-[color:var(--accent)]">✦</span>
+          <span className={overHero ? "text-[#f0cc7a]" : "text-[color:var(--accent)]"}>✦</span>
           <span className="transition-colors duration-500 group-hover:text-[color:var(--accent)]">
             lilly p.
           </span>
@@ -94,17 +98,14 @@ export default function Nav() {
           </AnimatePresence>
         </Link>
 
-        {/* Top-right pill nav */}
+        {/* Top-right pill nav. Theme-reactive via CSS variables:
+            - light mode: cream pill + dark text
+            - midnight mode: slate pill + cream text
+            Both readable in their respective theme — the pill is always
+            distinct from the page bg and the text always reads. */}
         <nav aria-label="Primary">
-          {/* The pill is LIGHT-LOCKED in both themes:
-              - color-scheme: light  → tells the browser AND extensions
-                like Dark Reader to leave this subtree alone
-              - solid hex colors only — no CSS vars that could flip
-              The result: cream bg + dark text always, identical in both modes. */}
-          <ul
-            style={{ colorScheme: "light" }}
-            className="flex items-center gap-1 rounded-full border border-[#dccfb3] bg-[#fbf3dc] px-1.5 py-1 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)]"
-          >
+          <ul className="flex items-center gap-1 rounded-full border bg-[color:var(--pill-bg)] px-1.5 py-1 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)]"
+              style={{ borderColor: "var(--pill-border)" }}>
             {site.nav.map((item) => {
               const href: string = item.href;
               const active =
@@ -115,24 +116,26 @@ export default function Nav() {
                     href={item.href}
                     data-cursor
                     className={cn(
-                      "relative inline-block rounded-full px-3.5 py-2 text-xs uppercase tracking-[0.2em] transition-colors duration-300",
-                      active
-                        ? "text-[#1a1208]"
-                        : "text-[#5a4d3b] hover:text-[#1a1208]"
+                      "relative inline-block rounded-full px-3.5 py-2 text-xs uppercase tracking-[0.2em] transition-colors duration-300"
                     )}
+                    style={{
+                      color: active
+                        ? "var(--pill-text-active)"
+                        : "var(--pill-text)",
+                    }}
                   >
                     {item.label}
                     {active && (
                       <span
                         aria-hidden
-                        className="absolute -bottom-0.5 left-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-[#b88a3e]"
+                        className="absolute -bottom-0.5 left-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-[color:var(--accent)]"
                       />
                     )}
                   </Link>
                 </li>
               );
             })}
-            <li className="ml-1 border-l border-[#dccfb3] pl-1">
+            <li className="ml-1 pl-1" style={{ borderLeft: "1px solid var(--pill-border)" }}>
               <ThemeToggle />
             </li>
           </ul>

@@ -35,7 +35,6 @@ export default function WorkGrid({ projects }: { projects: Project[] }) {
     <>
       <div
         className="mb-10 flex flex-wrap items-center gap-2 md:mb-14"
-        style={{ colorScheme: "light" }}
         role="tablist"
         aria-label="Filter projects by category"
       >
@@ -48,13 +47,20 @@ export default function WorkGrid({ projects }: { projects: Project[] }) {
               aria-selected={isActive}
               data-cursor
               onClick={() => setActive(f.id)}
-              className={cn(
-                "relative rounded-full border px-5 py-2 text-xs uppercase tracking-[0.22em] transition-colors duration-300",
-                // Chips stay parchment + ink in both themes — solid hex (no /opacity)
+              className="relative rounded-full border px-5 py-2 text-xs uppercase tracking-[0.22em] transition-colors duration-300"
+              style={
                 isActive
-                  ? "border-[#b88a3e] bg-[#b88a3e] text-[#1a1208]"
-                  : "border-[#dccfb3] bg-[#fbf3dc] text-[#5a4d3b] hover:border-[#b88a3e] hover:text-[#1a1208]"
-              )}
+                  ? {
+                      borderColor: "var(--accent)",
+                      backgroundColor: "var(--accent)",
+                      color: "#1a1208",
+                    }
+                  : {
+                      borderColor: "var(--pill-border)",
+                      backgroundColor: "var(--pill-bg)",
+                      color: "var(--pill-text)",
+                    }
+              }
             >
               {f.label}
             </button>

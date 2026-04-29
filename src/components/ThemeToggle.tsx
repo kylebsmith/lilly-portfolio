@@ -26,7 +26,8 @@ export default function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={`Switch to ${theme === "parchment" ? "midnight" : "parchment"} mode`}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[#1a1208] transition-transform duration-500 hover:rotate-180 hover:text-[color:var(--color-gold)]"
+      className="inline-flex h-8 w-8 items-center justify-center rounded-full transition-transform duration-500 hover:rotate-180"
+      style={{ color: "var(--pill-text-active)" }}
       data-cursor
     >
       <span aria-hidden className="text-[15px] leading-none">
