@@ -2,18 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { site } from "@content/site";
 import ThemeToggle from "./ThemeToggle";
 import { cn } from "@/lib/cn";
 
 /**
- * Top-right horizontal nav. The wordmark sits subtly top-left and
- * doubles as the easter egg trigger (5 quick clicks → rainbow sparkles).
+ * Top-left wordmark + top-right pill nav.
  *
- * Active state uses gold accent text + a thin underline — no bg fill,
- * which dodges the color-on-color trap.
+ *  Wordmark behavior:
+ *    - On the home page while still over the hero image → forced WHITE
+ *      (so it pops against the dark hero artwork)
+ *    - Anywhere else (or scrolled past hero) → theme-reactive
+ *      (dark in light mode, cream in midnight mode)
+ *
+ *  Pill nav:
+ *    - Locked to light styling in BOTH themes via `color-scheme: light`,
+ *      which also tells extensions like Dark Reader to leave it alone.
+ *    - All text colors are explicit hex — no CSS-var dependency, so the
+ *      pill never shifts when the theme toggles.
  */
 
 const UNLOCK_THRESHOLD = 5;
@@ -21,8 +29,23 @@ const UNLOCK_WINDOW_MS = 1800;
 
 export default function Nav() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const clicksRef = useRef<number[]>([]);
   const [popped, setPopped] = useState(false);
+  // True when the wordmark is sitting over the hero image (home + near top)
+  const [overHero, setOverHero] = useState(isHome);
+
+  useEffect(() => {
+    if (!isHome) {
+      setOverHero(false);
+      return;
+    }
+    const onScroll = () =>
+      setOverHero(window.scrollY < window.innerHeight * 0.65);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
 
   const recordClick = () => {
     const now = performance.now();
@@ -40,13 +63,16 @@ export default function Nav() {
   return (
     <header className="fixed inset-x-0 top-0 z-40">
       <div className="container-edge mx-auto flex max-w-[1700px] items-center justify-between pt-5 md:pt-7">
-        {/* Wordmark — small, refined, behaves like a site identifier rather than a logo */}
+        {/* Wordmark: white on hero, theme-reactive elsewhere */}
         <Link
           href="/"
           data-cursor
           aria-label="Home"
           onClick={recordClick}
-          className="group inline-flex items-baseline gap-1.5 font-display text-base uppercase tracking-[0.18em] text-[color:var(--fg)]"
+          className={cn(
+            "group inline-flex items-baseline gap-1.5 font-display text-base uppercase tracking-[0.18em] transition-colors duration-500",
+            overHero ? "text-white" : "text-[color:var(--fg)]"
+          )}
         >
           <span className="text-[color:var(--accent)]">✦</span>
           <span className="transition-colors duration-500 group-hover:text-[color:var(--accent)]">
@@ -68,13 +94,17 @@ export default function Nav() {
           </AnimatePresence>
         </Link>
 
-        {/* Top-right nav — horizontal text links + theme toggle */}
+        {/* Top-right pill nav */}
         <nav aria-label="Primary">
-          {/* The pill stays parchment + ink in BOTH themes — buttons don't
-              flip in dark mode, so dark text always reads. Solid hex colors
-              only (no /opacity modifier — that combo is unreliable on
-              arbitrary hex values in Tailwind v4). */}
-          <ul className="flex items-center gap-1 rounded-full border border-[#dccfb3] bg-[#fbf3dc] px-1.5 py-1 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)]">
+          {/* The pill is LIGHT-LOCKED in both themes:
+              - color-scheme: light  → tells the browser AND extensions
+                like Dark Reader to leave this subtree alone
+              - solid hex colors only — no CSS vars that could flip
+              The result: cream bg + dark text always, identical in both modes. */}
+          <ul
+            style={{ colorScheme: "light" }}
+            className="flex items-center gap-1 rounded-full border border-[#dccfb3] bg-[#fbf3dc] px-1.5 py-1 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)]"
+          >
             {site.nav.map((item) => {
               const href: string = item.href;
               const active =

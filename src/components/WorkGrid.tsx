@@ -35,6 +35,7 @@ export default function WorkGrid({ projects }: { projects: Project[] }) {
     <>
       <div
         className="mb-10 flex flex-wrap items-center gap-2 md:mb-14"
+        style={{ colorScheme: "light" }}
         role="tablist"
         aria-label="Filter projects by category"
       >
