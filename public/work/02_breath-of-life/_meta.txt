@@ -5,7 +5,10 @@ cover: cover.jpg
 gallery:
   - mockup.png
 year: 2026
-medium: Digital
+medium: Photoshop
 size: 6.2 × 8.6 in
 date: January 2026
-blurb: A creature design and style frame for a Magic the Gathering card.
+use_file_details: true
+blurb: A creature design and style frame for a Magic the Gathering card - Educational Project
+layout: standard
+hidden: false
