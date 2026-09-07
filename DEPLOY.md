@@ -124,13 +124,20 @@ Once https://lillybpatterson.com loads the new site (give it an hour):
 
 Push to `main` on GitHub → Vercel rebuilds and deploys automatically. About 60 seconds.
 
-To add a new project:
+**Lilly does not use this flow.** She edits at
+[`/admin`](https://www.lillybpatterson.com/admin) and the CMS commits for
+her — see [CONTENT.md](CONTENT.md).
 
-1. Add a new entry to [`src/data/projects.ts`](src/data/projects.ts).
-2. Drop image files into `public/work/<slug>/`.
-3. `git commit && git push`. Live in a minute.
+For a developer adding a project by hand:
 
-To swap Lilly's portrait: replace `public/about/portrait.svg` with `public/about/portrait.jpg` (any size, any aspect — `object-cover` handles it). Update the path in `src/app/about/page.tsx`.
+1. Create `public/work/<slug>/` and drop the images in.
+2. Add a `_meta.txt` with at least `title` and `category`
+   (see [README.md](README.md) for every key).
+3. `npm test && git commit && git push`. Live in about a minute.
+
+To swap Lilly's portrait: replace `public/about/portrait.png` and update
+`ABOUT_GALLERY` in `src/app/about/page.tsx` — the width/height there must
+match the new file.
 
 ---
 

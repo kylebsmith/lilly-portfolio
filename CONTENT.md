@@ -1,244 +1,174 @@
-# How to update your website
+# Updating your website
 
-Hi Lilly. **You will never need to touch code.** Everything is folder
-management and a tiny text file. Read this once, refer back when needed.
+Hi Lilly. Everything on your site is edited from one page, in your browser.
+**You never need to touch code, files, or anything called "git".**
 
----
+Bookmark this:
 
-## ✦ The whole site in one picture
-
-```
-public/work/
-  01_dnd-style-frame/
-    cover.jpg                   ← thumbnail (always named "cover.jpg")
-    azael-design.jpg            ← extra images = documentation
-    _meta.txt                   ← title / category / year
-  02_breath-of-life/
-    cover.jpg
-    mockup.png
-    _meta.txt
-  03_…
-```
-
-That's the whole pattern. Add a folder = add a project. Drop a file in
-that folder = it shows up. Done.
-
-Plus two side things:
-
-- `public/about/` — your portrait + a couple personal sketches that
-  appear on the About page
-- `content/site.ts` — your bio, email, social links
+### 👉 https://www.lillybpatterson.com/admin
 
 ---
 
-## ✦ Add a new project (3 steps, ~2 minutes)
+## ✦ Signing in (once)
 
-### 1. Make the folder
+The first time, you'll be asked for a GitHub access token. This sounds
+scarier than it is — it's a password that only lets the editor change
+your website, and nothing else.
 
-In `public/work/`, create a new folder. Name format:
+1. Go to **https://www.lillybpatterson.com/admin**
+2. Click **Sign In Using Access Token**
+3. It opens GitHub with everything already filled in. Scroll down and
+   click the green **Generate token** button.
+4. Copy the long string it shows you, come back, and paste it in.
 
-```
-##_some-name
-```
+Your browser remembers it, so from then on you just go to `/admin`.
 
-- `##` is a two-digit number (`01`, `02`…) — controls **order on the site**
-- `some-name` is the URL slug — lowercase, hyphens, no spaces
+> **Save that token somewhere.** Put it in your password manager or Notes.
+> GitHub will only show it to you once, and it expires about once a year —
+> when it does, the editor asks you to sign in again and you repeat these
+> four steps.
 
-> **Important:** the folder prefixed `01_*` becomes the **home page hero**.
-> Pick your strongest piece for that slot.
+---
 
-Example: `04_dragon-hunt`
+## ✦ The two halves of the editor
 
-### 2. Drop your files in
+**Projects** — every piece in your portfolio, one row each.
 
-| File type | What it does |
+**Look & Feel** and **About & Contact** — your colours, your bio, your
+email, your links.
+
+---
+
+## ✦ Add a new piece
+
+1. Click **Projects**, then the **+** / **Create New** button.
+2. Fill in the form:
+
+| Field | What it's for |
 |---|---|
-| **Images** (`.jpg`, `.png`, `.webp`) | The one named `cover.jpg` is the thumbnail. Other images appear on the project page in alphabetical order, below the lead. |
-| **Videos** (`.mp4`, `.mov`) | Render as inline players in the documentation strip. Compress them first (see below). |
-| `_meta.txt` | Three lines of plain text — title, category, year. |
+| **Title** | The name of the piece. |
+| **Category** | Pick one of the four. This is what the filter buttons on the Work page use. |
+| **Cover image** | The thumbnail. Drag your file in. |
+| **More images** | Everything else that appears on the piece's own page. Drag to set their order. |
+| **Year** | |
+| **Medium / Size / Date** | Optional. Leave blank and the site reads them out of the image file itself if Photoshop saved them. |
+| **Description** | A sentence or two, shown next to the title. |
+| **Page layout** | *Standard* = one big image then the rest. *Gallery* = an even grid, good for sketchbook pages. |
+| **Vimeo link** | Optional, for process videos — see below. |
 
-### 3. Photoshop metadata fills in the rest automatically
+3. Click **Save** (or **Publish**).
 
-If you fill in **File → File Info…** in Photoshop before exporting,
-the website pulls these from the JPG itself:
+**Your site updates itself in about a minute.** Give it a moment, then
+reload the page to see it.
 
-| Photoshop field | What appears on the site |
-|---|---|
-| **Description** (the text box) | The blurb under the title — write a short artist statement. Class codes / instructor / email are filtered out. |
-| **Document Title** | Captured for record-keeping (not currently displayed) |
-| **Author** | Captured for record-keeping |
-| **Copyright** | Captured for record-keeping (the site footer credits you) |
-| Image **Resolution** (Image Size dialog) | Becomes the "Size" field — e.g. 350 dpi at 3000×2265 px → "8.6 × 6.5 in" |
-| Photoshop's **Created Date** | Becomes the "Date" field (e.g. "January 2026") |
-| The fact you used **Photoshop / Illustrator / Procreate** | Becomes the "Medium" field — auto-mapped to "Digital" / "Digital (Procreate)" / etc. |
+---
 
-You can also write the medium explicitly in the Description field as a
-line by itself (e.g. "Watercolor" or "Gouache") and the site will use it.
+## ✦ Change the order — and pick the homepage piece
 
-### 4. `_meta.txt`
+In the **Projects** list, **drag the rows**.
 
-Plain text. Edit in TextEdit, VS Code, or anywhere. **No quotes, no
-commas, no brackets.**
+**The piece at the top is the big one on your homepage.** That's the only
+rule to remember.
+
+---
+
+## ✦ Take a piece off the site
+
+Open it and switch on **Hide from the site**, then Save.
+
+The piece disappears from the website but nothing is deleted — all your
+images are still there, and you can switch it back on any time.
+
+> There's no Delete button, on purpose. Deleting would throw away the
+> artwork itself, and there'd be no undo. Hiding does everything you
+> actually want. If you truly need something gone forever, ask Kyle.
+
+---
+
+## ✦ Videos and timelapses
+
+**Short clips** can be dropped straight in under *Video files*.
+
+**Anything long, put on Vimeo** and paste the link into the **Vimeo link**
+field instead.
+
+Why: your site has a monthly limit on how much it can send to visitors.
+A big video burns through that fast because it's sent again to every
+single person who visits. Vimeo handles that for free. Upload there,
+paste the link here.
+
+---
+
+## ✦ Your bio, email and links
+
+Click **About & Contact**.
+
+- **About paragraphs** — one box per paragraph. Drag to reorder, click
+  the **+** to add another.
+- **Email** — used on the Contact page and in the footer.
+- **Social links** — add or remove them.
+- **Homepage favorites** — the three pieces in the "a few favorites"
+  strip. Type the piece's web address name — the bit after `/work/` when
+  you're looking at it. (For "Breath of Life" that's `breath-of-life`.)
+
+---
+
+## ✦ Colours
+
+Click **Look & Feel**.
+
+You can change the **highlight colour** — the gold used for underlines,
+buttons, the ✦ mark and hover effects. There are two, one for the normal
+site and one for when a visitor switches it to night mode.
+
+Pick anything you like; if you hate it, change it back. You can't break
+anything here. The background and text colours aren't adjustable on
+purpose — it's very easy to accidentally make text unreadable, and hard
+to notice you've done it.
+
+> Want different fonts, or control over more of the design? That's
+> possible — ask Kyle. It's a change to the site itself rather than
+> something safe to expose as a switch.
+
+---
+
+## ✦ If something goes wrong
+
+**The editor will stop you before you break anything.** If a piece is
+missing something it needs, your site simply doesn't update, and this
+appears:
 
 ```
-title: The Dragon Hunt
-category: character-design
-year: 2026
+The site was NOT updated — nothing is broken.
+The last working version is still live and visitors see it as normal.
 ```
 
-That's all you need. If Photoshop already has a Description, **don't add
-a `blurb:` line** — the site auto-pulls your Description as the blurb.
-If Photoshop doesn't have a Description and you want to write a custom
-one, add a `blurb: …` line.
+That's the safety net working. **Your live site is never left broken** —
+it keeps showing the last good version until the problem is fixed.
 
-**Categories** — exactly one per project:
-- `character-design`
-- `environments`
-- `book-illustration`
-- `sketch-book`
+If you get stuck on a piece and just want to move on: **switch it to
+Hidden and Save.** That always clears the problem.
 
-### 5. Push to GitHub
+### Other things
 
-If you're using github.com directly: drag-and-drop the folder, write
-a quick commit message, click Commit changes.
+**"I made a change and the site looks the same."**
+Give it a minute and reload. Builds take about 60 seconds.
 
-The site rebuilds itself in about 60 seconds. Done.
+**"The editor asks me to sign in again."**
+Your token expired. Repeat the four steps at the top.
 
----
-
-## ✦ Adding a video / timelapse
-
-**Two ways**, depending on size:
-
-### Option A — Drop the file into the folder (easiest)
-
-If your video is **under ~30 MB**, just drop it (`.mp4` works best) into
-the project folder alongside the images. The site will render it as an
-inline player in the documentation strip.
-
-### Option B — Embed from Vimeo (recommended for big files)
-
-For longer timelapses or anything over 30 MB, **upload to Vimeo** (free)
-and paste the URL into `_meta.txt`:
-
-```
-title: Magic City Painting
-category: book-illustration
-year: 2026
-video: https://vimeo.com/123456789
-```
-
-The site will render a Vimeo player on the project page. Vimeo handles
-the bandwidth, so your hosting bill stays small.
-
-> **Why this matters:** Vercel (where the site is hosted) gives 100 GB
-> of free bandwidth a month. A 600 MB video served a few hundred times
-> would burn through that fast. Vimeo solves this for you, free.
-
-If you want to compress a big `.mp4` before uploading: open it in
-QuickTime → File → Export As → 1080p (or use [HandBrake](https://handbrake.fr/),
-free). 1280×720 at "fast 1080p30" preset is plenty for web.
+**"I deleted something by accident."**
+Nothing is ever really gone — every change is saved forever with a copy
+of what came before. Ask Kyle to put it back.
 
 ---
 
-## ✦ Reorder projects
+## ✦ Things worth knowing
 
-Just rename the folders. Want `dragon-hunt` to show first? Rename it
-to `01_dragon-hunt` and bump everyone else.
-
----
-
-## ✦ Remove a project
-
-Delete the folder, or rename it with a `_` prefix (`_archived_dragon-hunt`)
-and the site will skip it but keep the files around.
-
----
-
-## ✦ Change your bio, email, or social links
-
-Open [`content/site.ts`](content/site.ts), find the value, edit between
-the quotes, save. The file has comments to walk you through.
-
-The same file has a `homeFavorites:` array — list the slugs of the
-three projects you want featured on the home page below the hero.
-
----
-
-## ✦ Replace your portrait
-
-Drop a JPG at `public/about/portrait.jpg` (or .png) and update the
-src in `src/app/about/page.tsx`. One line.
-
-The two small sketches on the About page next to the portrait are
-`public/about/burger-at-desk.jpg` and `public/about/license-plate.png` —
-swap those filenames if you want different ones there.
-
----
-
-## ✦ Two ways to actually do all of this
-
-### A) The browser (zero install)
-
-1. Go to your repo at `github.com/YOUR_USER/lilly-portfolio`.
-2. Navigate into `public/work/`.
-3. Click **Add file → Upload files** to upload an entire new folder, or
-   click any existing file and the pencil icon (✏️) to edit `_meta.txt`.
-4. Scroll down, write a short message, click **Commit changes**.
-5. Vercel rebuilds. Live in ~60 seconds.
-
-### B) Your computer (VS Code + GitHub Desktop)
-
-Slightly more powerful — useful for uploading 10+ files at once or
-previewing the change locally before pushing.
-
-Install [GitHub Desktop](https://desktop.github.com/) once, clone the
-repo, edit files in Finder + TextEdit, then commit & push from Desktop.
-
----
-
-## ✦ If you break something
-
-Every change is a commit, and every commit is reversible.
-
-1. On github.com, click **Commits** at the top of your repo.
-2. Find the bad commit → click **Revert**.
-3. Site goes back to how it was.
-
-You cannot lose work permanently.
-
----
-
-## ✦ The naming convention, one more time
-
-- Folder: `##_slug-name/`
-- Inside: image files + optional video files + `_meta.txt`
-- Whichever image is `cover.jpg` becomes the thumbnail
-- `_meta.txt` has `title:`, `category:`, `year:`, optional `video:` (Vimeo URL)
-- Photoshop File Info → fills in medium / size / date / blurb automatically
-
-That's the entire system.
-
----
-
-## ✦ Categories
-
-| Slug | Label |
-|---|---|
-| `character-design` | Character Design |
-| `environments` | Environments |
-| `book-illustration` | Book Illustration |
-| `sketch-book` | Sketchbook |
-
-If you want a new category, ping the developer who built this — it's
-six lines of code in one file.
-
----
-
-## ✦ "What if I want a fancier editor someday?"
-
-Layer on a free CMS later if you ever want a form-based UI:
-- **[TinaCMS](https://tina.io)** — visual editor on top of these exact same folders
-- **[Decap CMS](https://decapcms.org/)** — same idea, free, lighter
-
-Both work *with* this setup, not against it. No migration needed.
+- **Images**: JPG, PNG or WEBP, up to 10 MB each. If a file is bigger,
+  export it smaller — nothing on a website needs to be larger than that.
+- **Filenames don't matter any more.** Name them whatever you want; you
+  choose the cover in the form.
+- **You can't break the live site by fumbling.** The worst that happens
+  is your update doesn't go out, and you get a plain-English message
+  saying what to fix.
