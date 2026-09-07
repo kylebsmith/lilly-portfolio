@@ -9,10 +9,9 @@ gallery:
 year: 2026
 medium: Watercolor and Photoshop
 size: 7.8 × 11.5 in
+date: ''
+use_file_details: true
+blurb: '"Tradigital" environmental study of a magical undercity in water color with digital editing.'
 layout: standard
 video: https://vimeo.com/1224705546?share=copy&fl=sv&fe=ci
-blurb: "\"Tradigital\" environmental study of a magical undercity in water color with digital editing."
 hidden: false
-use_file_details: true
-clips:
-  - magic-city-painting.mp4
