@@ -1,9 +1,9 @@
 order: 2
 title: Zora - Conceptual Valorant Agent
 category: character-design
-cover: olnow_202630_illu721_lillypatterson_a4_videogamecharacter_notext.jpg
+cover: zora_no_val_logo.jpg
 gallery:
-  - olnow_202630_illu721_lillypatterson_a4_videogamecharacter.jpg
+  - olnow_202630_illu721_lillypatterson_a4_videogamecharacter_notext.jpg
 year: 2026
 medium: Photoshop
 size: ''
