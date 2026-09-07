@@ -1,0 +1,190 @@
+// Adversarial regression suite for the content pipeline.
+//
+// Creates throwaway project folders under public/work/, fills each with a
+// hostile _meta.txt, runs the real build-manifest, and asserts the pipeline
+// neither crashes nor publishes nonsense. Everything is removed afterwards,
+// and the suite fails if the real manifest is not restored byte-for-byte.
+//
+//   node scripts/torture-test.mjs
+//
+// Exits 0 when every case passes.
+
+import { mkdir, writeFile, rm, readFile, copyFile, readdir } from "node:fs/promises";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileP = promisify(execFile);
+const ROOT = fileURLToPath(new URL("../public/work/", import.meta.url));
+const MANIFEST = fileURLToPath(new URL("../content/_manifest.json", import.meta.url));
+const SCRIPT = fileURLToPath(new URL("./build-manifest.mjs", import.meta.url));
+const PREFIX = "zztorture";
+
+let SRC_IMG;
+
+const run = async () => {
+  try { return { ok: true, out: (await execFileP("node", [SCRIPT])).stdout }; }
+  catch (e) { return { ok: false, out: (e.stdout || "") + (e.stderr || "") }; }
+};
+
+const manifest = async () => JSON.parse(await readFile(MANIFEST, "utf8")).projects;
+
+/* Each case: folder suffix, files to write, and an assertion over its project
+   record (or null when the pipeline is expected to withhold it). */
+const CASES = [
+  { n: "01-empty-meta",       meta: "",                               images: 1,
+    expect: null /* hard error: file present but parses to nothing */, skipBatch: true },
+  { n: "02-no-meta",          meta: null,                             images: 1, expect: (p) => p && p.title },
+  { n: "03-emoji-title",      meta: "title: Moth 🦋 Study\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title.includes("🦋") },
+  { n: "04-unquoted-colon",   meta: "title: Girl: A Study\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title === "Girl: A Study" },
+  { n: "05-quoted",           meta: 'title: "Quoted Title"\ncategory: environments\n', images: 1,
+    expect: (p) => p && p.title === "Quoted Title" },
+  { n: "06-block-blurb",      meta: "title: Block\ncategory: environments\nblurb: >-\n  line one\n  line two\n", images: 1,
+    expect: (p) => p && p.blurb === "line one line two" },
+  { n: "07-literal-blurb",    meta: "title: Literal\ncategory: environments\nblurb: |-\n  first\n  second\n", images: 1,
+    expect: (p) => p && p.blurb.includes("\n") },
+  { n: "08-accents",          meta: "title: Café Naïve — Étude\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title.includes("Café") },
+  { n: "09-bad-category",     meta: "title: Bad Cat\ncategory: not-a-real-category\n", images: 1,
+    expect: null /* hard error expected — tested separately */, skipBatch: true },
+  { n: "10-dup-order-a",      meta: "order: 500\ntitle: Dup A\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.order === 500 },
+  { n: "11-dup-order-b",      meta: "order: 500\ntitle: Dup B\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.order === 500 },
+  { n: "12-order-garbage",    meta: "order: not-a-number\ntitle: Garbage Order\ncategory: environments\n", images: 1,
+    expect: (p) => p && Number.isFinite(p.order) },
+  { n: "13-order-negative",   meta: "order: -5\ntitle: Negative\ncategory: environments\n", images: 1,
+    expect: (p) => p && Number.isFinite(p.order) },
+  { n: "14-hidden-true",      meta: "title: Hidden\ncategory: environments\nhidden: true\n", images: 1,
+    expect: (p) => p === undefined },
+  { n: "15-hidden-strfalse",  meta: 'title: Not Hidden\ncategory: environments\nhidden: "false"\n', images: 1,
+    expect: (p) => p !== undefined },
+  { n: "16-hidden-no",        meta: "title: Hidden No\ncategory: environments\nhidden: no\n", images: 1,
+    expect: (p) => p !== undefined },
+  { n: "17-cover-missing",    meta: "title: Cover Gone\ncategory: environments\ncover: nope.jpg\n", images: 2,
+    expect: (p) => p && p.images.length === 2 },
+  { n: "18-gallery-missing",  meta: "title: Gal Gone\ncategory: environments\ngallery:\n  - ghost.jpg\n", images: 2,
+    expect: (p) => p && p.images.length === 2 },
+  { n: "19-yaml-date",        meta: "title: Date Obj\ncategory: environments\ndate: 2026-01-05\n", images: 1,
+    expect: (p) => p && !/GMT|\(/.test(p.date) },
+  { n: "20-date-with-time",   meta: "title: Date Time\ncategory: environments\ndate: 2026-01-05 10:00:00\n", images: 1,
+    expect: (p) => p && !/GMT|\(/.test(p.date) },
+  { n: "21-crlf",             meta: "title: CRLF Test\r\ncategory: environments\r\nyear: 2026\r\n", images: 1,
+    expect: (p) => p && p.title === "CRLF Test" },
+  { n: "22-frontmatter",      meta: "---\ntitle: Fenced\ncategory: environments\n---\n", images: 1,
+    expect: (p) => p && p.title === "Fenced" },
+  { n: "23-yaml-specials",    meta: "title: '*starred* & <tagged>'\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title.includes("starred") },
+  { n: "24-long-title",       meta: "title: " + "A".repeat(400) + "\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title.length === 400 },
+  { n: "25-vimeo",            meta: "title: Vimeo\ncategory: environments\nvideo: https://vimeo.com/123456789\n", images: 1,
+    expect: (p) => p && p.videos.some((v) => v.embed) },
+  { n: "26-bad-video-url",    meta: "title: Bad Vid\ncategory: environments\nvideo: not-a-url\n", images: 1,
+    expect: (p) => p && !p.videos.some((v) => v.embed) },
+  { n: "27-tabs",             meta: "title:\tTabbed\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title === "Tabbed" },
+  { n: "28-weird-filenames",  meta: "title: Weird Files\ncategory: environments\n", images: 0,
+    files: { "a file with spaces.jpg": true, "ünïcødé.jpg": true }, expect: (p) => p && p.images.length === 2 },
+  { n: "29-no-images",        meta: "title: Imageless\ncategory: environments\n", images: 0,
+    expect: (p) => p === undefined },
+  { n: "30-numeric-title",    meta: "title: 2026 Sketches\ncategory: environments\n", images: 1,
+    expect: (p) => p && p.title === "2026 Sketches" },
+];
+
+async function makeCase(c) {
+  const folder = `${PREFIX}-${c.n}`;
+  const dir = join(ROOT, folder);
+  await mkdir(dir, { recursive: true });
+  if (c.files) {
+    for (const f of Object.keys(c.files)) await copyFile(SRC_IMG, join(dir, f));
+  } else {
+    for (let i = 0; i < (c.images ?? 0); i++) {
+      await copyFile(SRC_IMG, join(dir, i === 0 ? "cover.jpg" : `img-${i}.jpg`));
+    }
+  }
+  if (c.meta !== null) await writeFile(join(dir, "_meta.txt"), c.meta);
+  return folder;
+}
+
+async function cleanup() {
+  for (const d of await readdir(ROOT)) {
+    if (d.startsWith(PREFIX)) await rm(join(ROOT, d), { recursive: true, force: true });
+  }
+}
+
+async function main() {
+  // Smallest real image in the repo, so 30 copies stay cheap.
+  const candidates = [];
+  for (const d of await readdir(ROOT)) {
+    if (d.startsWith(PREFIX) || d.startsWith(".") || d.startsWith("_")) continue;
+    for (const f of await readdir(join(ROOT, d)).catch(() => [])) {
+      if (/\.jpe?g$/i.test(f)) candidates.push(join(ROOT, d, f));
+    }
+  }
+  const { stat } = await import("node:fs/promises");
+  let smallest = null, size = Infinity;
+  for (const c of candidates.slice(0, 60)) {
+    const s = (await stat(c)).size;
+    if (s < size) { size = s; smallest = c; }
+  }
+  SRC_IMG = smallest;
+
+  await run(); // settle the manifest first so the restore check is meaningful
+  const before = await readFile(MANIFEST, "utf8");
+  let pass = 0, fail = 0;
+
+  try {
+    await cleanup();
+
+    // ── Batch: every case expected to survive ──
+    const batch = CASES.filter((c) => !c.skipBatch);
+    for (const c of batch) await makeCase(c);
+
+    const r = await run();
+    if (!r.ok) {
+      console.log("✗ BATCH RUN CRASHED — pipeline did not survive:\n" + r.out.slice(-1500));
+      fail += batch.length;
+    } else {
+      const projects = await manifest();
+      for (const c of batch) {
+        const folder = `${PREFIX}-${c.n}`;
+        const p = projects.find((x) => x.folder === folder);
+        let ok = false;
+        try { ok = Boolean(c.expect(p)); } catch { ok = false; }
+        if (ok) { pass++; console.log(`  ✓ ${c.n}`); }
+        else { fail++; console.log(`  ✗ ${c.n}   got: ${p ? JSON.stringify({title:p.title,order:p.order,date:p.date,blurb:p.blurb,imgs:p.images?.length}) : "not published"}`); }
+      }
+    }
+    await cleanup();
+
+    // ── Isolated: cases expected to HARD-FAIL the build ──
+    for (const c of CASES.filter((x) => x.skipBatch)) {
+      await makeCase(c);
+      const r2 = await run();
+      if (!r2.ok) { pass++; console.log(`  ✓ ${c.n}  (correctly failed the build)`); }
+      else { fail++; console.log(`  ✗ ${c.n}  build PASSED but should have failed`); }
+
+      // ...and that `hidden` clears it, the documented escape hatch.
+      await writeFile(join(ROOT, `${PREFIX}-${c.n}`, "_meta.txt"), c.meta + "hidden: true\n");
+      const r3 = await run();
+      if (r3.ok) { pass++; console.log(`  ✓ ${c.n}  (hidden:true clears the hard error)`); }
+      else { fail++; console.log(`  ✗ ${c.n}  hidden:true did NOT clear the error`); }
+      await cleanup();
+    }
+  } finally {
+    await cleanup();
+    await run();
+  }
+
+  const after = await readFile(MANIFEST, "utf8");
+  if (before === after) { pass++; console.log("  ✓ manifest restored byte-identical"); }
+  else { fail++; console.log("  ✗ MANIFEST NOT RESTORED"); }
+
+  console.log(`\n${fail === 0 ? "✓ ALL PASS" : "✗ FAILURES"} — ${pass} passed, ${fail} failed`);
+  process.exit(fail === 0 ? 0 : 1);
+}
+
+main().catch((e) => { console.error(e); cleanup().then(() => process.exit(1)); });

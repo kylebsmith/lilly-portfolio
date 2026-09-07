@@ -10,7 +10,9 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "manifest": "node scripts/build-manifest.mjs"
+    "manifest": "node scripts/build-manifest.mjs",
+    "test": "node scripts/torture-test.mjs",
+    "check-content": "node scripts/build-manifest.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
