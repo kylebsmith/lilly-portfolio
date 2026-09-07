@@ -264,6 +264,39 @@ collections:
 # Every field here is REQUIRED on purpose - omit_empty_optional_fields would
 # drop an emptied optional key and site.social.map(...) would throw at build.
 singletons:
+  # Colour controls. Only the accent tones are exposed: they are used for
+  # underlines, highlights, buttons, the star mark and hover states, so any
+  # value stays legible. Page background and body text are deliberately NOT
+  # here — setting those independently is how you get cream text on cream
+  # paper, with no way to notice without opening every page.
+  # lib/theme.ts validates each value and falls back to the shipped colour.
+  - name: look_and_feel
+    label: Look & Feel
+    file: content/theme.json
+    icon: palette
+    fields:
+      - name: accent
+        label: Highlight colour
+        widget: color
+        default: '#b88a3e'
+        hint: >-
+          Used for underlines, buttons, the ✦ mark and hover states in
+          daytime mode.
+      - name: accentGlow
+        label: Highlight colour (brighter)
+        widget: color
+        default: '#e2b865'
+        hint: A lighter version of the same colour, used for glows and accents.
+      - name: accentDark
+        label: Highlight colour — night mode
+        widget: color
+        default: '#e2b865'
+        hint: The same idea, for when someone switches the site to night mode.
+      - name: accentGlowDark
+        label: Highlight colour — night mode (brighter)
+        widget: color
+        default: '#f0cc7a'
+
   - name: site_content
     label: About & Contact
     file: content/site-content.json

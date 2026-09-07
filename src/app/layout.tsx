@@ -16,6 +16,7 @@ import ScrollProgress from "@/components/ScrollProgress";
 import ClickSparkle from "@/components/ClickSparkle";
 import LightboxProvider from "@/components/Lightbox";
 import CatchToast from "@/components/CatchToast";
+import { themeCss } from "@/lib/theme";
 import "./globals.css";
 
 // Primary display — variable axes (wdth, wght, opsz). Chunky-confident
@@ -86,6 +87,10 @@ export default function RootLayout({
       className={`${display.variable} ${italic.variable} ${body.variable} ${mono.variable} ${hand.variable}`}
     >
       <head>
+        {/* Accent colours from the editor's "Look & Feel" panel. Validated in
+            lib/theme.ts — anything that isn't a hex colour falls back to the
+            shipped design value, so a typo here can never break a page. */}
+        <style dangerouslySetInnerHTML={{ __html: themeCss() }} />
         {/* Applies the saved theme BEFORE first paint.
             ThemeToggle also sets this, but it runs in an effect after
             hydration — so a visitor who chose midnight mode saw a flash
