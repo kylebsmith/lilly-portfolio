@@ -8,10 +8,9 @@ gallery:
 year: 2026
 medium: Watercolor and Photoshop
 size: 11 × 7.2 in
+date: ''
+use_file_details: true
+blurb: Conceptual cover for the book "The Girl with the Dragon Tattoo"
 layout: standard
 video: https://vimeo.com/1224707670?share=copy&fl=sv&fe=ci
-blurb: Conceptual cover for the book "The Girl with the Dragon Tattoo"
 hidden: false
-use_file_details: true
-clips:
-  - process-watercolor.mp4
