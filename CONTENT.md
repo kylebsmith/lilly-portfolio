@@ -11,22 +11,36 @@ Bookmark this:
 
 ## ✦ Signing in (once)
 
-The first time, you'll be asked for a GitHub access token. This sounds
-scarier than it is — it's a password that only lets the editor change
-your website, and nothing else.
+The first time, you'll need a GitHub access token. It sounds scarier than
+it is — it's just a password that lets the editor save changes to your
+website.
 
-1. Go to **https://www.lillybpatterson.com/admin**
-2. Click **Sign In Using Access Token**
-3. It opens GitHub with everything already filled in. Scroll down and
-   click the green **Generate token** button.
-4. Copy the long string it shows you, come back, and paste it in.
+**Do this once:**
 
-Your browser remembers it, so from then on you just go to `/admin`.
+1. Accept the GitHub invitation Kyle sent you (check your email).
+2. Go to **https://www.lillybpatterson.com/admin**
+3. At the bottom of the page there's a blue bar with a link — **use that
+   link**, not the button in the middle of the page. It opens GitHub with
+   everything filled in already.
+4. On that GitHub page, scroll to the bottom and click the green
+   **Generate token** button.
+5. GitHub shows you a long code. Copy it.
+6. Come back to the editor, click **Sign In Using Access Token**, and
+   paste the code in.
 
-> **Save that token somewhere.** Put it in your password manager or Notes.
-> GitHub will only show it to you once, and it expires about once a year —
-> when it does, the editor asks you to sign in again and you repeat these
-> four steps.
+Your browser remembers it, so after this you just go to `/admin`.
+
+> **⚠️ Use the link in the blue bar, not the button.** The button goes to a
+> different kind of token that won't be able to see your website — your
+> site simply won't appear in the list. The blue bar's link goes to the
+> right page. (Yes, this is confusing. It's a GitHub quirk, not you.)
+
+> **Save that code somewhere** — your password manager, or Notes. GitHub
+> shows it **only once** and there is no way to look it up again. If you
+> lose it, that's fine: just make a new one with the same steps.
+>
+> It also expires after about a year. When it does, the editor asks you to
+> sign in again and you repeat these steps.
 
 ---
 
@@ -156,7 +170,13 @@ Hidden and Save.** That always clears the problem.
 Give it a minute and reload. Builds take about 60 seconds.
 
 **"The editor asks me to sign in again."**
-Your token expired. Repeat the four steps at the top.
+Your token expired, or you're on a different computer. Repeat the steps
+at the top — making a new token is fine and you can do it as often as
+you like.
+
+**"I can't find my website in the list on GitHub."**
+You're on the wrong GitHub page. Go back to `/admin` and use the link in
+the blue bar at the bottom.
 
 **"I deleted something by accident."**
 Nothing is ever really gone — every change is saved forever with a copy

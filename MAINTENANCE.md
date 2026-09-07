@@ -6,6 +6,32 @@ the site when something is actually wrong.
 
 ---
 
+## Why she uses a CLASSIC token, not a fine-grained one
+
+Sveltia's "Sign In Using Access Token" button deep-links to GitHub's
+**fine-grained** token page. **That page cannot work for Lilly**, and the
+failure is silent: fine-grained tokens only reach repositories owned by the
+token creator's own account or an organization they belong to. This repo
+belongs to Kyle's personal account with her added as a collaborator, so it
+never appears in the repository picker. She would follow the button, find
+nothing, and be stuck with no error to search for.
+
+So `public/admin/index.html` shows a blue bar while signed out linking to
+the **classic** token page instead, pre-filled with the `repo` scope, which
+does work for a collaborator. The bar disappears once she is signed in.
+
+The tradeoff: classic `repo` scope covers every repository she can access,
+not just this one. Today that is only this repo, so the practical blast
+radius is the same — but it will not stay true if she gets others.
+
+**The clean long-term fix is to move this repo into a free GitHub
+Organization.** Then she becomes an org member rather than a personal-account
+collaborator, fine-grained tokens work, she can scope one to just this
+repository, and Sveltia's own button becomes correct. It costs nothing and
+takes about twenty minutes: create the org, transfer the repo, re-link the
+Vercel project, enable fine-grained tokens in the org's settings, and update
+the sign-in steps in CONTENT.md. Worth doing whenever this is next touched.
+
 ## The most likely future problem: her token expires
 
 GitHub fine-grained tokens **expire, at most 366 days out**. When hers

@@ -57,6 +57,22 @@
       @keyframes spin { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
 
+      /* Sign-in helper. Shown only until she has signed in. */
+      #token-help {
+        position: fixed;
+        inset-inline: 0;
+        bottom: 0;
+        z-index: 10000;
+        padding: 14px 18px;
+        background: #12305c;
+        color: #fff;
+        font: 400 13px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        text-align: center;
+      }
+      #token-help b { display: block; margin-bottom: 2px; font-size: 13.5px; }
+      #token-help a { color: #cfe0ff; font-weight: 600; }
+      #token-help small { display: block; margin-top: 4px; opacity: 0.75; }
+
       /* Preview-deployment warning. Only ever shown on a non-production host. */
       #not-live {
         position: fixed;
@@ -132,6 +148,49 @@
         document.addEventListener("DOMContentLoaded", function () {
           document.body.appendChild(bar);
         });
+      })();
+    </script>
+
+    <script>
+      // The "Sign In Using Access Token" button links to GitHub's FINE-GRAINED
+      // token page. That page cannot work here: fine-grained tokens only reach
+      // repositories owned by the token creator's own account or an
+      // organization they belong to, and this repository belongs to Kyle's
+      // personal account with Lilly added as a collaborator. The repo simply
+      // does not appear in the picker, which is a dead end with no explanation.
+      //
+      // A CLASSIC token with the "repo" scope does work for a collaborator, so
+      // point her there instead. Shown only while signed out; once Sveltia
+      // stores a user it disappears and never comes back.
+      (function () {
+        try {
+          if (localStorage.getItem("sveltia-cms.user")) return;
+        } catch (e) { /* storage blocked — still show the help */ }
+
+        var url = "https://github.com/settings/tokens/new" +
+                  "?description=Lilly+Portfolio+Editor&scopes=repo";
+        var el = document.createElement("div");
+        el.id = "token-help";
+        el.innerHTML =
+          "<b>First time here? Get your access token from this link.</b>" +
+          "Open <a href=\"" + url + "\" target=\"_blank\" rel=\"noreferrer\">this GitHub page</a>, " +
+          "scroll to the bottom, click <b style=\"display:inline\">Generate token</b>, " +
+          "then copy the code it shows you and paste it above." +
+          "<small>Use this link rather than the button's own — the button leads to a " +
+          "page that will not list this website.</small>";
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.appendChild(el);
+        });
+        // Sveltia clears the boot screen and renders its own UI when sign-in
+        // succeeds; drop the helper as soon as a user is stored.
+        var poll = setInterval(function () {
+          try {
+            if (localStorage.getItem("sveltia-cms.user")) {
+              if (el.parentNode) el.parentNode.removeChild(el);
+              clearInterval(poll);
+            }
+          } catch (e) { clearInterval(poll); }
+        }, 1000);
       })();
     </script>
 
