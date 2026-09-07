@@ -119,8 +119,10 @@
       // say it plainly and permanently.
       (function () {
         var live = "www.lillybpatterson.com";
-        if (location.hostname === live || location.hostname === "localhost" ||
-            location.hostname === "127.0.0.1") return;
+        // The apex is exempt too: it redirects to www today, but if that ever
+        // changed she must not be told the real site is a test copy.
+        var ok = [live, "lillybpatterson.com", "localhost", "127.0.0.1"];
+        if (ok.indexOf(location.hostname) !== -1) return;
         var bar = document.createElement("div");
         bar.id = "not-live";
         bar.innerHTML =
