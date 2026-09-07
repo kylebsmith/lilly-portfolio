@@ -1,3 +1,7 @@
 title: Lost In A Dream
 category: environments
 year: 2026
+medium: Digital
+size: 8.6 × 6.5 in
+date: January 2026
+blurb: Surrealist illustration exploring "lost in a Dream"

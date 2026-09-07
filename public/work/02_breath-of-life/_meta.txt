@@ -1,3 +1,7 @@
 title: Breath of Life
 category: character-design
 year: 2026
+medium: Digital
+size: 6.2 × 8.6 in
+date: January 2026
+blurb: A creature design and style frame for a Magic the Gathering card.

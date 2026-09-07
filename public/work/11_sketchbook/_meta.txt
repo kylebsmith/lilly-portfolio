@@ -1,5 +1,6 @@
 title: Sketchbook
 category: sketch-book
 year: 2025
+size: 14.9 × 9.7 in
 layout: gallery
 blurb: Pages from studio sketchbooks, lab studies, and the bound book.

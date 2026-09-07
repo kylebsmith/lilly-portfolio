@@ -1,3 +1,5 @@
 title: Book Spots
 category: book-illustration
 year: 2026
+medium: Digital
+size: 18.1 × 8.5 in

@@ -1,3 +1,4 @@
 title: The New Yorker — Full Page
 category: book-illustration
 year: 2026
+size: 8 × 11 in
