@@ -12,7 +12,19 @@
   "location": "Atlanta, GA",
   "program": "MFA Illustration, SCAD Atlanta",
   "social": [
-    { "label": "Instagram", "href": "https://www.instagram.com/lilly_padd_art" }
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/lilly_padd_art"
+    },
+    {
+      "label": "Linkedin",
+      "href": "https://www.linkedin.com/in/lilly-patterson-a903811a2/"
+    }
   ],
-  "homeFavorites": ["breath-of-life", "lost-in-a-dream", "girl-with-a-dragon-tattoo"]
+  "homeFavorites": [
+    "Zora - Conceptual Valorant Agent",
+    "Grath Kor - Orc",
+    "breath-of-life",
+    "girl-with-a-dragon-tattoo"
+  ]
 }
