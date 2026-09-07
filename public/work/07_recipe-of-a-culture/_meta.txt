@@ -3,7 +3,10 @@ title: The Recipe of a Culture
 category: book-illustration
 cover: cover.jpg
 year: 2026
-medium: Digital
+medium: Photoshop
 size: 8.6 × 6.6 in
 date: January 2026
+use_file_details: true
 blurb: Spot Illustrations that depict our persional culture, being from colorado this is Ski Culture.
+layout: standard
+hidden: false
