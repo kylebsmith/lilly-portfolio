@@ -6,35 +6,64 @@ the site when something is actually wrong.
 
 ---
 
-## Vercel must know her too — not just GitHub
+## Why this repository is public
 
-**Repo access is not enough.** Vercel's Hobby plan only builds commits whose
-git author has access to the *Vercel project*. Lilly's first three edits
-committed to GitHub perfectly and then failed to deploy with:
+**Vercel's Hobby plan does not allow collaboration on PRIVATE repositories.**
+Lilly's first edits committed to GitHub perfectly and then failed to deploy:
 
     Git author lillybpatterson-art must have access to the project on
     Vercel to create deployments.
 
-Her content was valid — the full production build passed on all three — and
-the site kept serving the previous version, so nothing broke. But her work was
-invisible, and nothing in the editor told her why. From her side, she saved and
-the site simply did not change.
+Her content was valid and the build passed; the site just kept serving the
+previous version. From her side she saved and nothing happened.
 
-**The fix is to add her to the Vercel project, which requires Pro** ($20/month).
-Vercel dashboard → the `kyle-2447's projects` team → **Settings → Members →
-Invite**, using the GitHub account `lillybpatterson-art`. Pro also settles the
-non-commercial-terms question below, since the site advertises commissions.
+Vercel's own documentation resolves it in one line: **"Collaboration is free
+for public repositories."** So the repo was made public on 2026-09-07 and her
+commits deploy normally, at no cost.
 
-**Stopgap if it happens again before that:** any commit authored by the account
-owner makes Vercel build the current tree, including her unpublished work.
+The alternative was Vercel Pro at **$20 per seat** — two seats, so $40/month,
+which is more than the Squarespace plan this site replaced. That is the wrong
+answer for a project whose purpose was to stop paying for hosting.
+
+Before flipping it, the repo was checked for secrets: no API keys, no
+credentials, no `.env` in the tree or anywhere in history. It holds images,
+source and docs. The images were already publicly downloadable from the site
+itself, so publishing the repo exposed nothing that was not already served.
+
+**One residual, accepted knowingly:** git history still contains the
+pre-strip copies of three images, whose Photoshop caption held a course code,
+an instructor's name and Lilly's email. Her email is already the headline
+call-to-action on the contact page, and the rest is not sensitive. Purging it
+would mean rewriting history and force-pushing, which invalidates every commit
+ID — not worth it. If that ever changes, `git filter-repo` is the tool.
+
+**If you ever need it private again**, her deploys break again and the options
+become: Pro ($40/mo), a GitHub Action that rewrites the commit author and
+deploys via the Vercel CLI, or running this after each of her edits:
 
     git pull && git commit --allow-empty -m "Redeploy: publish Lilly's edits" && git push
 
-**Rejected alternatives.** Deploy hooks do *not* help — Vercel reads the author
-off the latest commit no matter how the build was triggered. The free
-workaround is a GitHub Action that rewrites the author on the CI runner and
-deploys via the Vercel CLI, which works but adds a workflow, three secrets and
-a rotating Vercel token to a project whose whole point is being maintainable.
+Note also that deploy hooks do NOT solve this — Vercel reads the author off the
+latest commit regardless of how the build was triggered.
+
+## Image metadata is stripped before publishing
+
+The originals under `public/` are served directly, so anything embedded in
+them is public. Three images carried a Photoshop caption containing a course
+code, an instructor's name and Lilly's email; the site filtered that from
+DISPLAY but served the raw file intact. Those fields were removed with
+`exiftool`, keeping DPI, capture date and software so the metadata pipeline
+still works.
+
+This was only safe because `freeze-meta.mjs` had already written the derived
+Medium/Size/Date/Description into `_meta.txt`. Verified in isolation: the only
+manifest change was the internal `images[0].description` going null.
+
+**If she uploads new work, check it:**
+
+    exiftool -Caption-Abstract -Description public/work/*/*.jpg | grep -iE 'ILLU|@'
+    exiftool -overwrite_original -Caption-Abstract= -Description= \
+      -ImageDescription= -XMP-dc:Description= -XMP:Description= <files>
 
 ## Why she uses a CLASSIC token, not a fine-grained one
 
