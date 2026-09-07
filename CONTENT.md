@@ -52,6 +52,7 @@ email, your links.
 | **More images** | Everything else that appears on the piece's own page. Drag to set their order. |
 | **Year** | |
 | **Medium / Size / Date** | Optional. Leave blank and the site reads them out of the image file itself if Photoshop saved them. |
+| **Fill blank details from the image file** | On by default. Turn it **off** if you want Medium / Size / Date / Description to stay genuinely empty — otherwise clearing a box just lets the image's own information fill it back in. |
 | **Description** | A sentence or two, shown next to the title. |
 | **Page layout** | *Standard* = one big image then the rest. *Gallery* = an even grid, good for sketchbook pages. |
 | **Vimeo link** | Optional, for process videos — see below. |
@@ -165,8 +166,12 @@ of what came before. Ask Kyle to put it back.
 
 ## ✦ Things worth knowing
 
-- **Images**: JPG, PNG or WEBP, up to 10 MB each. If a file is bigger,
+- **Images**: JPG, PNG or WEBP, up to 25 MB each. If a file is bigger,
   export it smaller — nothing on a website needs to be larger than that.
+- **Sign-in**: there is one button, *Sign In Using Access Token*. That's
+  the only one that works here, so it's the only one shown.
+- **Photos of sketchbook pages** taken on your phone come out the right
+  way up, including ones shot in portrait.
 - **Filenames don't matter any more.** Name them whatever you want; you
   choose the cover in the form.
 - **You can't break the live site by fumbling.** The worst that happens
