@@ -20,7 +20,7 @@
 //
 // Runs before `dev` and `build`.
 
-import { readdir, readFile, writeFile, stat, mkdir } from "node:fs/promises";
+import { readdir, readFile, writeFile, stat, mkdir, open } from "node:fs/promises";
 import { join, dirname, basename } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFile } from "node:child_process";
@@ -42,7 +42,92 @@ const execFileP = promisify(execFile);
  *   3. 1280×720 (16:9) default — only hits if a brand-new video is
  *      added on a build host without ffprobe and not yet in cache
  */
+/**
+ * Read a QuickTime/MP4 track header to get DISPLAY dimensions, in pure JS.
+ *
+ * This exists because **Vercel's build image has no ffprobe**. Every video
+ * added through the CMS was therefore falling through to a hardcoded
+ * 1280x720, so a phone-shot vertical clip rendered in a 16:9 box — squashed,
+ * letterboxed, and wrong on the live site while looking fine locally, where
+ * ffprobe does exist. That is the worst kind of bug: invisible to the person
+ * who could fix it.
+ *
+ * Handles both tkhd versions, and reads the transform matrix so a clip
+ * recorded in portrait and flagged with a 90-degree rotation reports the
+ * dimensions a viewer actually sees.
+ *
+ * Verified against ffprobe on every video in this repo: exact match, 4/4,
+ * including two portrait clips.
+ */
+async function readVideoBoxDimensions(path) {
+  let fh;
+  try {
+    fh = await open(path, "r");
+    const { size } = await fh.stat();
+    const read = async (pos, len) => {
+      const buf = Buffer.alloc(Math.min(len, Math.max(0, size - pos)));
+      if (buf.length > 0) await fh.read(buf, 0, buf.length, pos);
+      return buf;
+    };
+
+    const dims = [];
+    const scan = async (start, end, depth = 0) => {
+      let pos = start;
+      while (pos < end && depth < 6) {
+        const head = await read(pos, 16);
+        if (head.length < 8) return;
+        let boxSize = head.readUInt32BE(0);
+        const type = head.toString("latin1", 4, 8);
+        let headerLen = 8;
+        if (boxSize === 1) {
+          if (head.length < 16) return;
+          boxSize = Number(head.readBigUInt64BE(8));
+          headerLen = 16;
+        } else if (boxSize === 0) {
+          boxSize = end - pos;
+        }
+        if (boxSize < headerLen) return;
+
+        if (type === "tkhd") {
+          const body = await read(pos + headerLen, boxSize - headerLen);
+          // v0: matrix at 40, width/height at 76/80.  v1 adds 12 bytes.
+          const off = body[0] === 1 ? 88 : 76;
+          if (body.length >= off + 8) {
+            const w = body.readUInt32BE(off) / 65536;
+            const h = body.readUInt32BE(off + 4) / 65536;
+            let rotated = false;
+            const mOff = off - 36;
+            if (body.length >= mOff + 8) {
+              const a = body.readInt32BE(mOff) / 65536;
+              const b = body.readInt32BE(mOff + 4) / 65536;
+              rotated = Math.abs(a) < 0.01 && Math.abs(b) > 0.99;
+            }
+            if (w > 0 && h > 0) dims.push(rotated ? { w: h, h: w } : { w, h });
+          }
+        }
+        if (type === "moov" || type === "trak") await scan(pos + headerLen, pos + boxSize, depth + 1);
+        pos += boxSize;
+      }
+    };
+
+    await scan(0, size);
+    if (dims.length === 0) return null;
+    // Largest track is the video one (audio tracks report 0x0 and are dropped).
+    const best = dims.reduce((a, b) => (b.w * b.h > a.w * a.h ? b : a));
+    return { w: Math.round(best.w), h: Math.round(best.h) };
+  } catch {
+    return null;
+  } finally {
+    await fh?.close().catch(() => {});
+  }
+}
+
 async function probeVideo(filePath, cached) {
+  // Strategy 0: read the container ourselves. Works everywhere, including the
+  // production build host, so it goes first.
+  const box = await readVideoBoxDimensions(filePath);
+  if (box) return box;
+
   try {
     const { stdout } = await execFileP("ffprobe", [
       "-v", "error",
@@ -55,6 +140,12 @@ async function probeVideo(filePath, cached) {
     if (Number.isFinite(w) && Number.isFinite(h) && w > 0 && h > 0) return { w, h };
   } catch { /* ffprobe missing or failed — fall through */ }
   if (cached && cached.w && cached.h) return { w: cached.w, h: cached.h };
+  // Nothing could read it. 16:9 is a guess, and a wrong one for vertical
+  // footage — say so rather than letting a squashed video reach the site
+  // with no trace of why.
+  warn(basename(dirname(filePath)),
+    `could not read the size of "${basename(filePath)}" — showing it as ` +
+    `16:9, which will look wrong if it was filmed upright.`);
   return { w: 1280, h: 720 };
 }
 
@@ -544,9 +635,23 @@ async function readImageMeta(filePath) {
   // Copyright string for footer-level attribution
   const copyright = pickFirstString(exif.Copyright, exif.rights);
 
+  // DISPLAY dimensions, not stored ones.
+  //
+  // A photo taken on a phone — which is how sketchbook pages get shot — is
+  // often stored landscape with an EXIF Orientation flag telling the viewer to
+  // turn it 90 degrees. Browsers honor that flag, so the picture appears
+  // upright, but sharp reports the stored width and height. The site uses
+  // these numbers to reserve an aspect-ratio box, so an upright photo got a
+  // landscape box: letterboxed, mis-sized, and shifting the layout as it loads.
+  // Orientation values 5-8 are the quarter-turn cases.
+  const turned = typeof sharpMeta.orientation === "number" &&
+                 sharpMeta.orientation >= 5 && sharpMeta.orientation <= 8;
+  const storedW = sharpMeta.width ?? 1;
+  const storedH = sharpMeta.height ?? 1;
+
   return {
-    w: sharpMeta.width ?? 1,
-    h: sharpMeta.height ?? 1,
+    w: turned ? storedH : storedW,
+    h: turned ? storedW : storedH,
     medium,
     size,
     date,
