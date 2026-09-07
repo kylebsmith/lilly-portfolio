@@ -1,4 +1,4 @@
-order: 6
+order: 7
 title: Threptic Gardening
 category: book-illustration
 cover: cover.jpg

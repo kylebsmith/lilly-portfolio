@@ -1,4 +1,4 @@
-order: 11
+order: 1
 title: Zora - Conceptual Valorant Agent
 category: character-design
 cover: Agent Card Mockup.jpg

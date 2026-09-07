@@ -1,4 +1,4 @@
-order: 5
+order: 6
 title: Girl with the Dragon Tattoo — Conceptual Piece
 category: book-illustration
 cover: cover.jpg
