@@ -92,10 +92,22 @@ const CASES = [
     expect: (p) => p === undefined },
   { n: "30-numeric-title",    meta: "title: 2026 Sketches\ncategory: environments\n", images: 1,
     expect: (p) => p && p.title === "2026 Sketches" },
+  // ── Round 2: failure modes found by adversarial verification ──
+  { n: "31-blurb-leaks-email",  meta: "title: Leaky Blurb\ncategory: environments\nblurb: A study of light. Contact me at lillybpatterson@gmail.com for prints.\n", images: 1,
+    expect: (p) => p && !/@/.test(p.blurb ?? "") },
+  { n: "32-blurb-leaks-class",  meta: "title: Leaky Class\ncategory: environments\nblurb: A surreal environment study. ILLU 714 final submission.\n", images: 1,
+    expect: (p) => p && !/ILLU/i.test(p.blurb ?? "") },
+  { n: "33-clips-order",        meta: null, images: 1, clips: ["b-second.mp4", "a-first.mp4"],
+    metaAfter: "title: Clip Order\ncategory: environments\nclips:\n  - b-second.mp4\n  - a-first.mp4\n",
+    expect: (p) => p && p.videos[0]?.src.endsWith("b-second.mp4") },
+  { n: "34-corrupt-image",      meta: "title: Corrupt\ncategory: environments\n", images: 1, corrupt: true,
+    expect: null /* hard error, named */, skipBatch: true },
+  { n: "35-duplicate-slug",     meta: "title: Book Spots\ncategory: environments\n", images: 1, forceSlug: "book-spots",
+    expect: null /* hard error: collides with the real book-spots */, skipBatch: true },
 ];
 
 async function makeCase(c) {
-  const folder = `${PREFIX}-${c.n}`;
+  const folder = c.forceSlug ? `900_${c.forceSlug}` : `${PREFIX}-${c.n}`;
   const dir = join(ROOT, folder);
   await mkdir(dir, { recursive: true });
   if (c.files) {
@@ -105,13 +117,26 @@ async function makeCase(c) {
       await copyFile(SRC_IMG, join(dir, i === 0 ? "cover.jpg" : `img-${i}.jpg`));
     }
   }
-  if (c.meta !== null) await writeFile(join(dir, "_meta.txt"), c.meta);
+  if (c.clips) {
+    // Any real mp4 works; only the ORDER of the list is under test.
+    const src = join(ROOT, "04_lost-in-a-dream", "process-clip.mp4");
+    for (const f of c.clips) await copyFile(src, join(dir, f));
+  }
+  if (c.corrupt) {
+    // A file with a .jpg name that sharp cannot decode — a truncated upload,
+    // or a renamed .psd. This used to kill the build with a bare stack trace.
+    await writeFile(join(dir, "cover.jpg"), "this is not an image at all");
+  }
+  const body = c.metaAfter ?? c.meta;
+  if (body !== null && body !== undefined) await writeFile(join(dir, "_meta.txt"), body);
   return folder;
 }
 
 async function cleanup() {
   for (const d of await readdir(ROOT)) {
-    if (d.startsWith(PREFIX)) await rm(join(ROOT, d), { recursive: true, force: true });
+    if (d.startsWith(PREFIX) || d.startsWith("900_")) {
+      await rm(join(ROOT, d), { recursive: true, force: true });
+    }
   }
 }
 
@@ -168,7 +193,8 @@ async function main() {
       else { fail++; console.log(`  ✗ ${c.n}  build PASSED but should have failed`); }
 
       // ...and that `hidden` clears it, the documented escape hatch.
-      await writeFile(join(ROOT, `${PREFIX}-${c.n}`, "_meta.txt"), c.meta + "hidden: true\n");
+      const dir2 = c.forceSlug ? `900_${c.forceSlug}` : `${PREFIX}-${c.n}`;
+      await writeFile(join(ROOT, dir2, "_meta.txt"), (c.metaAfter ?? c.meta) + "hidden: true\n");
       const r3 = await run();
       if (r3.ok) { pass++; console.log(`  ✓ ${c.n}  (hidden:true clears the hard error)`); }
       else { fail++; console.log(`  ✗ ${c.n}  hidden:true did NOT clear the error`); }

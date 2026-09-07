@@ -198,6 +198,30 @@ function orderImages(imageFiles, metaTxt) {
   return [...picked, ...imageFiles.filter((f) => !picked.includes(f))];
 }
 
+/**
+ * Video order, mirroring orderImages().
+ *
+ * The CMS writes a `clips:` list when she uploads videos, and nothing read it —
+ * the field looked functional and did nothing, which is the exact silent no-op
+ * this design exists to avoid. Files on disk she never listed are appended, so
+ * a manually-dropped clip still plays.
+ */
+function orderClips(videoFiles, metaTxt) {
+  const present = new Set(videoFiles);
+  const picked = [];
+  const list = Array.isArray(metaTxt.clips)
+    ? metaTxt.clips
+    : typeof metaTxt.clips === "string" && metaTxt.clips.trim()
+      ? [metaTxt.clips]
+      : [];
+  for (const raw of list) {
+    const name = basename(String(raw).trim());
+    if (present.has(name) && !picked.includes(name)) picked.push(name);
+  }
+  if (picked.length === 0) return videoFiles;
+  return [...picked, ...videoFiles.filter((f) => !picked.includes(f))];
+}
+
 const imageSort = (a, b) => {
   const aCover = /^cover\./i.test(a) ? 0 : 1;
   const bCover = /^cover\./i.test(b) ? 0 : 1;
@@ -355,7 +379,17 @@ function titleCase(str) {
 function extractMedium(captionLines) {
   if (!captionLines) return null;
   const found = captionLines.find(isMediumLine);
-  return found ? titleCase(found) : null;
+  if (!found) return null;
+  // A caption line like "Digital, ILLU 714" matched the medium tell and then
+  // published the course code as the Medium. Keep only the leading segments
+  // that are clean, so it degrades to "Digital" rather than leaking.
+  const kept = [];
+  for (const part of found.split(",")) {
+    if (isPrivateLine(part) || isProperName(part.trim())) break;
+    kept.push(part);
+  }
+  const cleaned = kept.join(",").trim();
+  return cleaned ? titleCase(cleaned) : null;
 }
 
 /**
@@ -618,17 +652,28 @@ async function main() {
         `Open this project in the editor and pick a Cover image.`);
     }
 
-    const images = await Promise.all(
-      orderedImages.map(async (f) => {
+    // A file sharp cannot decode — a truncated upload, a renamed .psd, a
+    // half-written sync — used to throw out of this Promise.all and kill the
+    // whole run with a bare stack trace naming no folder and no file. Catch it
+    // per image so the report says which picture in which project is bad.
+    const images = [];
+    for (const f of orderedImages) {
+      try {
         const m = await readImageMeta(join(dir, f));
-        return { src: `/work/${folderName}/${f}`, ...m };
-      })
-    );
+        images.push({ src: `/work/${folderName}/${f}`, ...m });
+      } catch {
+        fail(folderName,
+          `has an image the site cannot read: "${f}".`,
+          `Re-export it as a normal JPG or PNG and upload it again, ` +
+          `or remove it from this project.`);
+      }
+    }
+    if (images.length === 0) continue;
 
     // Videos — probe real dimensions so the proportional grid can
     // honor each one's actual aspect ratio (vertical phone footage,
     // 16:9 timelapses, etc. all behave correctly).
-    const videos = await Promise.all(videoFiles.map(async (f) => {
+    const videos = await Promise.all(orderClips(videoFiles, metaTxt).map(async (f) => {
       const src = `/work/${folderName}/${f}`;
       const dim = await probeVideo(join(dir, f), cachedVideoDims.get(src));
       return {
@@ -649,9 +694,27 @@ async function main() {
 
     // _meta.txt always wins for blurb. If absent or empty, fall back to
     // the prose Lilly wrote inside Photoshop's caption field.
-    const blurb = metaTxt.blurb && metaTxt.blurb.trim()
-      ? metaTxt.blurb
+    // _meta.txt wins for the blurb. If absent, fall back to the prose Lilly
+    // wrote in Photoshop's caption field.
+    //
+    // Either way it goes through the SAME privacy scrub. The EXIF path was
+    // already filtered, but a blurb typed or pasted into the CMS was not — so
+    // a course code or an email address copied out of an assignment brief
+    // would have gone straight onto the public page.
+    let blurb = metaTxt.blurb && metaTxt.blurb.trim()
+      ? metaTxt.blurb.trim()
       : cover.description || undefined;
+    if (blurb && isPrivateLine(blurb)) {
+      const cleaned = blurb
+        .split(/(?<=[.!?])\s+/)
+        .filter((sentence) => !isPrivateLine(sentence))
+        .join(" ")
+        .trim();
+      warn(folderName,
+        `the description contained something that looks private (a course code ` +
+        `or an email address) — that part was left off the website.`);
+      blurb = cleaned || undefined;
+    }
 
     // Layout: "standard" (default — hero image + meta strip + doc grid)
     //         "gallery"  (one big grid of all images, no formal hero/meta)
@@ -740,6 +803,30 @@ async function main() {
 
   projects.sort((a, b) => a.order - b.order || a.folder.localeCompare(b.folder));
 
+  // Two folders can produce the same URL — she names a new piece the same as an
+  // old one, or a CMS-created folder matches an existing one once its numeric
+  // prefix is stripped. generateStaticParams would emit a duplicate route and
+  // one piece would silently disappear. Fail with both folder names.
+  const bySlug = new Map();
+  for (const p of projects) {
+    if (bySlug.has(p.slug)) {
+      fail(p.folder,
+        `has the same web address as "${bySlug.get(p.slug).title}" (/work/${p.slug}).`,
+        `Two pieces cannot share an address. Rename one of them — give this one ` +
+        `a slightly different Title — and publish again.`);
+    } else {
+      bySlug.set(p.slug, p);
+    }
+  }
+
+  // Everything hidden (or nothing published) means the home page has no hero
+  // and the build would crash reading projects[0].
+  if (projects.length === 0) {
+    fail("(your website)",
+      `has no visible pieces, so there is nothing to show.`,
+      `Open any piece and turn "Hide from the site" back off, then publish again.`);
+  }
+
   // ── report ──────────────────────────────────────────────────
   for (const w of problems.warnings) console.warn(`  ⚠  ${label(w.folder)} — ${w.msg}`);
 
@@ -761,6 +848,24 @@ async function main() {
     );
     process.exit(1);
   }
+
+  // Homepage favorites are typed by hand as slugs. One that matches nothing is
+  // silently dropped at render time, so the strip just gets shorter with no
+  // clue why. Name the offender while we still know every valid slug.
+  try {
+    const siteContent = JSON.parse(
+      await readFile(fileURLToPath(new URL("../content/site-content.json", import.meta.url)), "utf8")
+    );
+    const known = new Set(projects.map((p) => p.slug));
+    for (const raw of siteContent.homeFavorites ?? []) {
+      const slug = String(raw).trim().toLowerCase().replace(/^\/?work\//, "").replace(/\/+$/, "");
+      if (slug && !known.has(slug)) {
+        warn("(homepage favorites)",
+          `"${raw}" doesn't match any piece, so it won't appear. ` +
+          `Check the spelling against the address bar when you open that piece.`);
+      }
+    }
+  } catch { /* no site-content.json, or unreadable — the build handles it elsewhere */ }
 
   await mkdir(dirname(OUT), { recursive: true });
   await writeFile(OUT, JSON.stringify({ projects }, null, 2) + "\n");

@@ -151,10 +151,29 @@ export const heroProject = () => projects[0];
  * project are silently skipped — so you can stage a slug for a piece
  * you're about to add without breaking the build.
  */
-export const featuredProjects = (slugs: readonly string[]): Project[] =>
-  slugs
-    .map((s) => projects.find((p) => p.slug === s))
-    .filter((p): p is Project => Boolean(p));
+const normalizeSlug = (s: string): string =>
+  s
+    .trim()
+    .toLowerCase()
+    // She is told to copy "the bit after /work/". Accept it if she pastes the
+    // whole address, or the path, or leaves a trailing slash.
+    .replace(/^https?:\/\/[^/]+/, "")
+    .replace(/^\/?work\//, "")
+    .replace(/\/+$/, "");
+
+export const featuredProjects = (slugs: readonly string[]): Project[] => {
+  // The hero is already shown, full width, directly above this strip. Letting
+  // it appear again here shows the same piece twice on one screen — and it
+  // happens by accident, because dragging a favorite to the top of the list in
+  // the editor makes it the hero without removing it from the favorites.
+  const heroSlug = projects[0]?.slug;
+  const seen = new Set<string>();
+  return slugs
+    .map((s) => projects.find((proj) => proj.slug === normalizeSlug(s)))
+    .filter((proj): proj is Project => Boolean(proj))
+    .filter((proj) => proj.slug !== heroSlug)
+    .filter((proj) => (seen.has(proj.slug) ? false : (seen.add(proj.slug), true)));
+};
 
 export const projectBySlug = (slug: string) =>
   projects.find((p) => p.slug === slug);

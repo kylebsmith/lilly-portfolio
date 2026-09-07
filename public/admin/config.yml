@@ -8,6 +8,10 @@ backend:
   name: github
   repo: kylebsmith/lilly-portfolio
   branch: main            # the branch Vercel builds; a commit here is a deploy
+  # [LB] Token only. There is no OAuth proxy, so the "Sign In with GitHub"
+  # button can never succeed — it sends her to a URL that does not exist.
+  # Showing one button that works beats two where the obvious one is broken.
+  auth_methods: [token]
   # No base_url/auth_type/app_id - those are for an OAuth proxy or GitHub App.
   # PAT sign-in needs no config at all.
   commit_messages:
@@ -33,7 +37,12 @@ public_folder: /uploads
 media_libraries:
   default:
     config:
-      max_file_size: 10485760   # 10 MiB, rejected in-browser before any commit
+      # [LB] 25 MiB. The previous 10 MiB cap was BELOW her own existing work —
+      # 09_book-spots/cover.png is 13 MB — so her first upload would have been
+      # rejected with no explanation of what size is acceptable. 25 MiB clears
+      # every image currently in the repo and stays well under GitHub's 100 MB
+      # hard limit.
+      max_file_size: 26214400
       slugify_filename: true    # [LB] filenames become URL segments
       # DELIBERATELY ABSENT: transformations. Re-encoding would strip the
       # EXIF/IPTC/XMP that build-manifest.mjs reads for medium/size/date/blurb.
@@ -341,7 +350,7 @@ singletons:
           - name: href
             label: Link
             widget: string
-            pattern: ['^https?://.+', 'Links must start with https://']
+            pattern: ['^https://.+', 'Links must start with https://']
 
       # Free text rather than a relation widget: an unmatched slug is already
       # harmless, because featuredProjects() silently skips slugs with no match.
