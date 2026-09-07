@@ -2,10 +2,14 @@ order: 9
 title: How I Hold It Together
 category: book-illustration
 cover: cover.png
+gallery:
+  - panel-bath.png
+  - panel-cat.png
+  - panel-tea.png
 year: 2026
 medium: Photoshop
 size: 11 × 8.5 in
-use_file_details: true
-blurb: A collection of spot illustrations on what keeps me calm.
 layout: standard
+blurb: A collection of spot illustrations on what keeps me calm.
 hidden: false
+use_file_details: true

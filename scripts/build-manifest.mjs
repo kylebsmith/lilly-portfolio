@@ -285,6 +285,20 @@ function orderImages(imageFiles, metaTxt) {
       : [];
   for (const g of gallery) push(g);
 
+  // When _meta.txt names a gallery, that list IS the set of images — not a
+  // hint about their order.
+  //
+  // This used to append every unlisted file on disk, which meant removing a
+  // picture in the editor did nothing: she curated 12 sketchbook pages and the
+  // site kept publishing all 29. Uploading a replacement left the old one
+  // showing. There was no way for her to take an image off her own website.
+  //
+  // A MISSING `gallery` key still means "publish everything", so projects
+  // predating the editor are untouched, and a save that fails to write the key
+  // degrades to showing too much rather than silently emptying a page.
+  if (Object.prototype.hasOwnProperty.call(metaTxt, "gallery")) {
+    return picked.length > 0 ? picked : imageFiles.slice(0, 1);
+  }
   if (picked.length === 0) return imageFiles;
   return [...picked, ...imageFiles.filter((f) => !picked.includes(f))];
 }
@@ -309,6 +323,11 @@ function orderClips(videoFiles, metaTxt) {
     const name = basename(String(raw).trim());
     if (present.has(name) && !picked.includes(name)) picked.push(name);
   }
+  // Same rule as images: a present `clips` list is the set of videos.
+  // Without this she could not remove a video at all — and three projects were
+  // publishing a heavy local .mp4 alongside the Vimeo embed she had added to
+  // replace it.
+  if (Object.prototype.hasOwnProperty.call(metaTxt, "clips")) return picked;
   if (picked.length === 0) return videoFiles;
   return [...picked, ...videoFiles.filter((f) => !picked.includes(f))];
 }
@@ -763,10 +782,11 @@ async function main() {
       const stray = imageFiles.filter((f) => !named.has(f));
       if (stray.length > 0) {
         warn(folderName,
-          `${stray.length} image${stray.length > 1 ? "s are" : " is"} in this piece but not ` +
-          `chosen as Cover or More images — ${stray.join(", ")} — so ` +
-          `${stray.length > 1 ? "they still appear" : "it still appears"} at the end of the page. ` +
-          `If you replaced a picture and chose "Keep Both", the old one is still here.`);
+          `${stray.length} image file${stray.length > 1 ? "s are" : " is"} still stored in this ` +
+          `piece but not shown on the site — ${stray.slice(0, 6).join(", ")}` +
+          `${stray.length > 6 ? `, and ${stray.length - 6} more` : ""}. ` +
+          `That is expected if you removed ${stray.length > 1 ? "them" : "it"} in the editor. ` +
+          `Ask Kyle to delete the file${stray.length > 1 ? "s" : ""} if you want the space back.`);
       }
     }
 

@@ -48,11 +48,20 @@ media_libraries:
       # EXIF/IPTC/XMP that build-manifest.mjs reads for medium/size/date/blurb.
 
 output:
-  # [LB] Without this an untouched optional field is written as `key: ''`, a
-  # PRESENT key, which suppresses build-manifest's EXIF fallback and renders an
-  # empty blurb. Only acts on fields declared `required: false` - and `required`
-  # defaults to TRUE, so every optional field below sets it explicitly.
-  omit_empty_optional_fields: true
+  # [LB] Deliberately FALSE, and the original rationale for true was wrong.
+  #
+  # Claimed: an empty `key: ''` would suppress the EXIF fallback and render a
+  # blank blurb. Measured: it does not - `medium: ''` and an absent `medium`
+  # produce identical output, because build-manifest tests the VALUE for
+  # truthiness. (The EXIF fallback is controlled explicitly by the
+  # `use_file_details` switch instead.)
+  #
+  # Meanwhile omitting empty keys actively broke removal. Clearing the images
+  # out of a piece wrote an empty list, this dropped the key entirely, and
+  # build-manifest reads a MISSING `gallery` as "publish everything on disk" -
+  # so emptying the box brought every picture back. Keeping the key means an
+  # empty list reads as the empty list it is.
+  omit_empty_optional_fields: false
   yaml:
     # [LB] 'none' still auto-quotes anything ambiguous (yes/no/true/12:30/
     # "- 5 in"/"Girl: A Study" all verified to round-trip). Chosen over 'double'

@@ -49,7 +49,12 @@ const FREEZE = ["medium", "size", "date", "blurb"];
 //   cover  The `cover` field is REQUIRED in the CMS. With no cover: key, every
 //          existing project opens with an empty required field and Save is
 //          refused — blocking even a one-character typo fix on all of them.
-const DERIVE = ["order", "cover"];
+//   clips  Videos on disk were never written into _meta.txt, so the "Video
+  //          files" box opened EMPTY next to a project that plainly had one.
+  //          She could not see them, reorder them, or remove them — and three
+  //          projects were serving a heavy local .mp4 alongside the Vimeo embed
+  //          she had added to replace it.
+const DERIVE = ["order", "cover", "clips"];
 
 const tracked = new Set();
 try {
@@ -101,6 +106,16 @@ for (const p of projects) {
     if (rest.length > 0) {
       next.gallery = rest;
       added.push("gallery");
+    }
+  }
+
+  if (next.clips === undefined || next.clips === null) {
+    const local = (p.videos ?? [])
+      .filter((v) => !v.embed)
+      .map((v) => v.src.split("/").pop());
+    if (local.length > 0) {
+      next.clips = local;
+      added.push("clips");
     }
   }
 

@@ -11,8 +11,10 @@ gallery:
 year: 2026
 medium: Watercolor and Photoshop
 size: 18.1 × 8.5 in
-use_file_details: true
-blurb: Interior book spots for "The Girl with the Dragon Tattoo" book
 layout: standard
 video: https://vimeo.com/1224708279?share=copy&fl=sv&fe=ci
+blurb: Interior book spots for "The Girl with the Dragon Tattoo" book
 hidden: false
+use_file_details: true
+clips:
+  - process-timelapse.mp4
