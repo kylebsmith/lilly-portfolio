@@ -11,7 +11,7 @@ export const site = {
   description:
     "Portfolio of Lilly Patterson — illustrator and visual development artist.",
   email: "lillybpatterson@gmail.com",
-  url: "https://lillybpatterson.com",
+  url: "https://www.lillybpatterson.com",
 
   // Replace these with your real handles. To remove one,
   // delete the whole {…}, line including the comma.

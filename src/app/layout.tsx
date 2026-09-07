@@ -85,6 +85,22 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${display.variable} ${italic.variable} ${body.variable} ${mono.variable} ${hand.variable}`}
     >
+      <head>
+        {/* Applies the saved theme BEFORE first paint.
+            ThemeToggle also sets this, but it runs in an effect after
+            hydration — so a visitor who chose midnight mode saw a flash
+            of parchment on every single page load. This runs synchronously
+            in <head>, so the correct theme is on the element before the
+            browser paints anything. Wrapped in try/catch because
+            localStorage throws in some privacy modes. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(localStorage.getItem("lp.theme")==="midnight")' +
+              'document.documentElement.dataset.theme="midnight"}catch(e){}',
+          }}
+        />
+      </head>
       <body>
         <SmoothScroll />
         <ScrollProgress />

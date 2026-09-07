@@ -212,10 +212,16 @@ html.lenis, html.lenis body { height: auto; }
   }
 }
 
-/* Custom cursor — desktop only */
+/* Custom cursor — desktop only, and ONLY while it is actually rendering.
+   Cursor.tsx sets data-custom-cursor="on" once it has confirmed a fine
+   pointer AND that the visitor has not asked for reduced motion. Hiding
+   the native cursor without that guard left reduced-motion desktop users
+   with no pointer at all. */
 @media (pointer: fine) {
-  body { cursor: none; }
-  a, button, [data-cursor] { cursor: none; }
+  [data-custom-cursor="on"] body { cursor: none; }
+  [data-custom-cursor="on"] a,
+  [data-custom-cursor="on"] button,
+  [data-custom-cursor="on"] [data-cursor] { cursor: none; }
 }
 
 @keyframes draw {

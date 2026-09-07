@@ -36,6 +36,19 @@ export default function Cursor() {
     setEnabled(true);
   }, []);
 
+  // 1b. Tell the stylesheet the custom cursor is actually rendering.
+  //
+  // globals.css hides the native cursor, but ONLY under this flag. Without
+  // it, a desktop visitor with "reduce motion" enabled got `cursor: none`
+  // from the media query while this component bailed out above and drew
+  // nothing — leaving them with no visible pointer at all.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (enabled) root.dataset.customCursor = "on";
+    else delete root.dataset.customCursor;
+    return () => { delete root.dataset.customCursor; };
+  }, [enabled]);
+
   // 2. Listen for lightbox-driven cursor mode
   useEffect(() => {
     const onMode = (e: Event) => {
