@@ -57,6 +57,20 @@
       @keyframes spin { to { transform: rotate(360deg); } }
       @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
 
+      /* Preview-deployment warning. Only ever shown on a non-production host. */
+      #not-live {
+        position: fixed;
+        inset-inline: 0;
+        top: 0;
+        z-index: 10000;
+        padding: 10px 16px;
+        background: #8a1c1c;
+        color: #fff;
+        font: 600 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        text-align: center;
+      }
+      #not-live span { font-weight: 400; opacity: 0.9; }
+
       #boot[data-state="loading"] .failed,
       #boot[data-state="failed"] .loading,
       #boot[data-state="failed"] .spinner { display: none; }
@@ -97,6 +111,28 @@
       This runs BEFORE the editor script so that __cmsFailed already exists if
       that script 404s and fires its onerror handler.
     -->
+    <script>
+      // This page also exists on Vercel preview deployments, at a temporary
+      // URL. The editor publishes to the `main` branch wherever it is served
+      // from, so a Save here reaches the REAL website even though the address
+      // bar says otherwise. Nothing in the interface would tell you that, so
+      // say it plainly and permanently.
+      (function () {
+        var live = "www.lillybpatterson.com";
+        if (location.hostname === live || location.hostname === "localhost" ||
+            location.hostname === "127.0.0.1") return;
+        var bar = document.createElement("div");
+        bar.id = "not-live";
+        bar.innerHTML =
+          "⚠ This is a test copy of the editor. " +
+          "<span>Anything you save here still publishes to the real website. " +
+          "To edit normally, go to https://" + live + "/admin</span>";
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.appendChild(bar);
+        });
+      })();
+    </script>
+
     <script>
       // Sveltia supports a "#/signin/<token>" URL, used for its phone-to-desktop
       // QR handoff. Nothing here uses it, and it means any link someone can get

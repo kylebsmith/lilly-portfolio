@@ -80,6 +80,30 @@ localStorage and talks to api.github.com.
 
 ---
 
+## Preview deployments and the editor
+
+Every branch you push gets a Vercel preview at a temporary URL, and that
+preview has a working `/admin` on it.
+
+**The editor always publishes to `main`, whatever host it is served from.**
+So a Save in a preview's editor reaches the real website. The preview is a safe
+place to *look*, not to *save*.
+
+The admin page detects this and shows a red bar on any host that is not
+`www.lillybpatterson.com` (localhost is exempt — local-repository mode writes
+to your working tree, not to GitHub).
+
+To test saving safely, open `localhost:3000/admin` and choose **Work with
+Local Repository**. It edits your checkout directly and commits nothing.
+
+> A branch-aware config — generating `config.yml` at build time from
+> `VERCEL_GIT_COMMIT_REF` so each preview writes to its own branch — was
+> considered and rejected. It would make previews a true sandbox, but it turns
+> a plain readable config file into a build artifact, and the warning bar
+> closes the same footgun for a tenth of the complexity.
+
+---
+
 ## Two accepted limitations
 
 Both were found by adversarial testing, reproduced, and deliberately **not**
