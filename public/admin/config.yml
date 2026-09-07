@@ -202,6 +202,18 @@ collections:
           - '^(?!\d{4}-\d{2}-\d{2}$).+'
           - Please write the date in words, like "January 2026".
 
+      # [LB] required: true so omit_empty_optional_fields can never drop this
+      # key — if it vanished, the fallback would silently switch back on.
+      - name: use_file_details
+        label: Fill blank details from the image file
+        widget: boolean
+        required: true
+        default: true
+        hint: >-
+          Leave this on and the site reads Medium, Size, Date and Description
+          out of the picture itself whenever you leave those boxes empty. Turn
+          it off to leave them genuinely blank on the page.
+
       - name: blurb
         label: Description
         widget: text

@@ -799,6 +799,17 @@ async function main() {
 
     // _meta.txt always wins for blurb. If absent or empty, fall back to
     // the prose Lilly wrote inside Photoshop's caption field.
+    // Whether the blanks get filled in from the image file's own metadata.
+    //
+    // Every fallback below tested the VALUE for truthiness, never the KEY for
+    // presence, so "never set" and "deliberately cleared" were the same input:
+    // she would empty the Size box, save, and watch the old value reappear.
+    // The Size row is the worst case because it is computed from pixel
+    // dimensions and DPI, so it comes back for ANY image — the meaningless
+    // "16 × 9 in" on a screen export could not be removed at all.
+    const useFileDetails =
+      metaTxt.use_file_details === undefined || isTrue(metaTxt.use_file_details);
+
     // _meta.txt wins for the blurb. If absent, fall back to the prose Lilly
     // wrote in Photoshop's caption field.
     //
@@ -808,7 +819,7 @@ async function main() {
     // would have gone straight onto the public page.
     let blurb = metaTxt.blurb && metaTxt.blurb.trim()
       ? metaTxt.blurb.trim()
-      : cover.description || undefined;
+      : (useFileDetails ? cover.description || undefined : undefined);
     if (blurb && isPrivateLine(blurb)) {
       const cleaned = blurb
         .split(/(?<=[.!?])\s+/)
@@ -872,9 +883,9 @@ async function main() {
       year: metaTxt.year ? Number(metaTxt.year) : undefined,
       blurb,
       layout,
-      medium: metaTxt.medium || cover.medium || null,
-      size: metaTxt.size || cover.size || null,
-      date: metaTxt.date || cover.date || null,
+      medium: metaTxt.medium || (useFileDetails ? cover.medium : null) || null,
+      size: metaTxt.size || (useFileDetails ? cover.size : null) || null,
+      date: metaTxt.date || (useFileDetails ? cover.date : null) || null,
       copyright: cover.copyright || null,
       images,
       videos,
