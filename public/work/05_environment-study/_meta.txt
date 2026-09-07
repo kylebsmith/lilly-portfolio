@@ -1,12 +1,15 @@
 order: 5
-title: Environment Study
+title: London Underground
 category: environments
 cover: cover.jpg
 gallery:
   - study-01.jpg
   - study-02.jpg
   - study-03.jpg
-  - thumbnails.jpg
 year: 2026
-medium: Digital
+medium: Watercolor and Photoshop
 size: 7.8 × 11.5 in
+use_file_details: true
+blurb: '"Tradigital" environmental study of a magical undercity in water color with digital editing.'
+layout: standard
+hidden: false
