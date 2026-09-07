@@ -1,7 +1,7 @@
 order: 7
 title: Girl with the Dragon Tattoo — Conceptual Piece
 category: book-illustration
-cover: cover.jpg
+cover: olnow_202630_illu727_lillypatterson_a2_bookcover_notext.jpg
 gallery:
   - mockup.jpg
   - study-01.jpg
