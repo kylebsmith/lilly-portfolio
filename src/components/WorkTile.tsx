@@ -27,6 +27,10 @@ export default function WorkTile({
 }) {
   const wrapRef = useRef<HTMLAnchorElement>(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  // If the image optimizer refuses (a 402 once Vercel's free-tier
+  // transformation quota is spent) <Image> renders nothing and the grid
+  // goes blank. The originals are static files, so fall back to them.
+  const [rawFallback, setRawFallback] = useState(false);
   const reduced = useReducedMotion();
 
   const tilt = reduced ? 0 : (index % 2 ? 0.7 : -0.9);
@@ -80,7 +84,9 @@ export default function WorkTile({
             fill
             sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
             priority={priority}
-            quality={88}
+            quality={90}
+            unoptimized={rawFallback}
+            onError={() => setRawFallback(true)}
             className="object-cover transition-transform duration-[1300ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
           />
         </motion.div>

@@ -58,7 +58,7 @@ export default function DocumentationGrid({
                 alt={altTitle}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                quality={88}
+                quality={90}
               />
             </figure>
           );

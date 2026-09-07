@@ -180,7 +180,7 @@ export default async function ProjectPage({
             alt={project.title}
             fill
             priority
-            quality={92}
+            quality={90}
             sizes="100vw"
           />
         </div>

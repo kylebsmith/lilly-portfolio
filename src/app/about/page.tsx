@@ -90,7 +90,7 @@ export default function About() {
                   alt="Lilly Patterson"
                   fill
                   sizes="(min-width: 768px) 40vw, 100vw"
-                  quality={92}
+                  quality={90}
                 />
               </div>
             </Reveal>
@@ -106,7 +106,7 @@ export default function About() {
                   alt="Burger at desk — sketchbook study"
                   fill
                   sizes="(min-width: 768px) 28vw, 70vw"
-                  quality={88}
+                  quality={90}
                 />
               </figure>
               <p className="mt-3 text-center font-hand text-xl text-[color:var(--accent)]">

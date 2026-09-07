@@ -2,6 +2,13 @@ order: 9
 title: Book Spots
 category: book-illustration
 cover: cover.png
+gallery:
+  - mockup.png
+  - spots.jpg
+  - study-01.jpg
+  - study-02.jpg
+  - study-03.jpg
+  - study-04.jpg
 year: 2026
 medium: Digital
 size: 18.1 × 8.5 in

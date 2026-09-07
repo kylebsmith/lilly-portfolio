@@ -2,5 +2,9 @@ order: 8
 title: How I Hold It Together
 category: book-illustration
 cover: cover.png
+gallery:
+  - panel-bath.png
+  - panel-cat.png
+  - panel-tea.png
 year: 2026
 size: 11 × 8.5 in

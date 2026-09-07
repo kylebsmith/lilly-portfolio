@@ -2,5 +2,7 @@ order: 6
 title: The New Yorker — Full Page
 category: book-illustration
 cover: cover.jpg
+gallery:
+  - mockup.jpg
 year: 2026
 size: 8 × 11 in

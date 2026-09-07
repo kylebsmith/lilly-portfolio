@@ -748,6 +748,28 @@ async function main() {
     // Explicit choices from the CMS win over the filename convention.
     const orderedImages = orderImages(imageFiles, metaTxt);
 
+    // Files sitting in the folder that neither Cover nor More images names.
+    // Uploading a corrected export does NOT remove the old file — and if she
+    // hit "Keep Both" on the name-conflict prompt, the superseded version is
+    // still here and still published, appended after everything she chose.
+    // Only meaningful once _meta.txt names anything at all; otherwise every
+    // pre-CMS project would warn.
+    if (metaTxt.gallery !== undefined) {
+      const named = new Set(
+        [metaTxt.cover, ...(Array.isArray(metaTxt.gallery) ? metaTxt.gallery : [metaTxt.gallery])]
+          .filter(Boolean)
+          .map((x) => basename(String(x).trim()))
+      );
+      const stray = imageFiles.filter((f) => !named.has(f));
+      if (stray.length > 0) {
+        warn(folderName,
+          `${stray.length} image${stray.length > 1 ? "s are" : " is"} in this piece but not ` +
+          `chosen as Cover or More images — ${stray.join(", ")} — so ` +
+          `${stray.length > 1 ? "they still appear" : "it still appears"} at the end of the page. ` +
+          `If you replaced a picture and chose "Keep Both", the old one is still here.`);
+      }
+    }
+
     // Only warn when NOTHING chose the thumbnail — neither the CMS's
     // `cover:` key nor a file named cover.*. Otherwise the first image
     // is a deliberate choice and there is nothing to report.

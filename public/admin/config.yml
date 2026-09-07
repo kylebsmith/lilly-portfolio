@@ -154,7 +154,9 @@ collections:
         choose_url: false
         hint: >-
           The thumbnail for this piece, on the Work page and on the homepage
-          if this is the top project.
+          if this is the top project. Uploading a corrected version does not
+          delete the old file - if you are asked whether to replace or keep
+          both, choose Replace, or the old picture stays on the page.
 
       - name: gallery
         label: More images

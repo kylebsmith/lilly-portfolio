@@ -2,6 +2,8 @@ order: 4
 title: Lost In A Dream
 category: environments
 cover: cover.jpg
+gallery:
+  - thumbnails.jpg
 year: 2026
 medium: Digital
 size: 8.6 × 6.5 in

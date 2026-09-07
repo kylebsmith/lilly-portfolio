@@ -2,5 +2,8 @@ order: 1
 title: Dungeons & Dragons — Style Frame
 category: character-design
 cover: cover.jpg
+gallery:
+  - azael-design.jpg
+  - oop.jpg
 year: 2026
 size: 16 × 9 in

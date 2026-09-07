@@ -98,6 +98,16 @@
       that script 404s and fires its onerror handler.
     -->
     <script>
+      // Sveltia supports a "#/signin/<token>" URL, used for its phone-to-desktop
+      // QR handoff. Nothing here uses it, and it means any link someone can get
+      // her to click could plant a credential in this origin's storage. Strip
+      // it before the bundle boots and reads location.
+      if (/^#\/signin\//.test(location.hash)) {
+        history.replaceState(null, "", location.pathname + location.search);
+      }
+    </script>
+
+    <script>
       (function () {
         var boot = document.getElementById("boot");
         if (!boot) return;

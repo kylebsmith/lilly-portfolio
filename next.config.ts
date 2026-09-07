@@ -32,8 +32,15 @@ const config: NextConfig = {
     // Undeclared values are silently clamped to the default 75 — which was
     // quietly downgrading the artwork this whole site exists to show.
     qualities: [75, 88, 90, 92, 95],
-    deviceSizes: [320, 480, 640, 768, 1024, 1280, 1536, 1920, 2560],
-    imageSizes: [16, 32, 64, 96, 128, 256, 384, 512, 768],
+    // Every (source, width, quality, format) combination is a separate image
+    // Vercel generates and stores. Nine device widths x nine image widths x two
+    // formats fanned out to thousands of variants across 90 source images —
+    // and when the free-tier transformation quota runs out the optimizer
+    // returns 402 and <Image> renders NOTHING, so the artwork simply
+    // disappears. Six well-spaced breakpoints cover every real viewport here;
+    // the components also fall back to the original file if a request fails.
+    deviceSizes: [320, 640, 1024, 1280, 1920, 2560],
+    imageSizes: [128, 256, 384, 640],
   },
   async headers() {
     return [

@@ -2,5 +2,8 @@ order: 10
 title: Girl with the Dragon Tattoo — Conceptual Piece
 category: book-illustration
 cover: cover.jpg
+gallery:
+  - mockup.jpg
+  - study-01.jpg
 year: 2026
 size: 11 × 7.2 in

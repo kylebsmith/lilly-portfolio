@@ -4,11 +4,16 @@ import DisciplineRibbon from "@/components/DisciplineRibbon";
 import Masonry from "@/components/Masonry";
 import Reveal from "@/components/Reveal";
 import { Doodle } from "@/components/Doodles";
-import { featuredProjects } from "@content/projects";
+import { featuredProjects, projects } from "@content/projects";
 import { site } from "@content/site";
 
 export default function Home() {
-  const featured = featuredProjects(site.homeFavorites);
+  // If favorites get hidden, renamed, or mistyped, this strip can collapse to
+  // one giant full-bleed tile — or nothing at all — under a heading that still
+  // says "a few favorites". Fall back to the pieces right after the hero so the
+  // section is always honest and never a lone monolith.
+  const chosen = featuredProjects(site.homeFavorites);
+  const featured = chosen.length >= 2 ? chosen : projects.slice(1, 4);
 
   return (
     <>

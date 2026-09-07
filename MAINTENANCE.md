@@ -80,6 +80,38 @@ localStorage and talks to api.github.com.
 
 ---
 
+## Two accepted limitations
+
+Both were found by adversarial testing, reproduced, and deliberately **not**
+"fixed", because the available fixes cost more than the risk.
+
+**The token is stored in cleartext in `localStorage`.** That is how Sveltia's
+token sign-in works; there is no encrypted alternative short of patching the
+vendored bundle. The blast radius is bounded — a fine-grained PAT with
+`contents:write` on this one private repo, so the worst case is defacement of
+the portfolio, and every commit is reversible. The `#/signin/<token>` URL
+route, which would have let a crafted link plant a credential, IS disabled in
+`public/admin/index.html`.
+
+A forced re-login timer was considered and rejected: the token already expires
+within 366 days, so a shorter TTL would multiply how often she has to
+re-authenticate for a marginal gain. **The operational rule instead: she should
+sign out from the editor if she ever uses a shared or borrowed computer.**
+
+**Two devices saving at once can silently overwrite each other.** Sveltia
+fetches the branch head *while building the commit* rather than using the head
+it had when the page loaded, so its optimistic-concurrency check cannot catch a
+change made in between. Fixing it properly means patching the minified 2 MB
+bundle — which would break the sha256 provenance check, make every upgrade a
+manual re-patch, and leave unreviewable code in the repo. Not worth it for a
+site with one editor.
+
+The practical rule: **don't edit from two places at the same time**, and if
+Kyle is pushing changes, tell her to reload `/admin` before she saves. If it
+ever does happen, nothing is lost — the overwritten version is still in git.
+
+---
+
 ## Changing the design
 
 Lilly controls the accent colours (`content/theme.json`, validated by

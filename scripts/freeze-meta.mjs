@@ -93,6 +93,16 @@ for (const p of projects) {
       added.push("cover");
     }
   }
+  // Without this the CMS's "More images" box opens EMPTY next to a project
+  // that plainly has 29 pictures — which teaches her the editor is not showing
+  // her the truth, the first time she opens it.
+  if (next.gallery === undefined || next.gallery === null) {
+    const rest = (p.images ?? []).slice(1).map((i) => i.src.split("/").pop());
+    if (rest.length > 0) {
+      next.gallery = rest;
+      added.push("gallery");
+    }
+  }
 
   for (const key of FREEZE) {
     if (next[key] !== undefined && next[key] !== null && next[key] !== "") continue;

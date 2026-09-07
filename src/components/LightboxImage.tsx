@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useLightbox, type LightboxImage as LbImage } from "./Lightbox";
 import { cn } from "@/lib/cn";
@@ -37,6 +38,12 @@ export default function LightboxImage({
   className,
   intrinsic,
 }: Props) {
+  // If Vercel's image optimizer refuses — a 402 once the free-tier
+  // transformation quota is spent — <Image> renders NOTHING and the page
+  // goes blank where the artwork should be. The originals are plain static
+  // files under /work/, so falling back to unoptimized re-fetches the real
+  // JPEG: heavier, but the painting is still there.
+  const [rawFallback, setRawFallback] = useState(false);
   const { open } = useLightbox();
   const img = gallery[index];
 
@@ -70,6 +77,8 @@ export default function LightboxImage({
           quality={quality}
           priority={priority}
           draggable={false}
+          unoptimized={rawFallback}
+          onError={() => setRawFallback(true)}
           className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.015]"
         />
       ) : (
@@ -82,6 +91,8 @@ export default function LightboxImage({
           quality={quality}
           priority={priority}
           draggable={false}
+          unoptimized={rawFallback}
+          onError={() => setRawFallback(true)}
           className={cn(
             "h-auto w-full transition-transform duration-[1200ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.015]",
             intrinsic && "object-contain"

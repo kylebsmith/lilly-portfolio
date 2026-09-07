@@ -235,7 +235,7 @@ function LightboxView({
               alt={img.alt ?? ""}
               width={img.w}
               height={img.h}
-              quality={95}
+              quality={90}
               priority
               sizes="100vw"
               draggable={false}
