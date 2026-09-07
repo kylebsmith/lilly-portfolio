@@ -12,4 +12,5 @@ size: 7.8 × 11.5 in
 use_file_details: true
 blurb: '"Tradigital" environmental study of a magical undercity in water color with digital editing.'
 layout: standard
+video: https://vimeo.com/1224705546?share=copy&fl=sv&fe=ci
 hidden: false
