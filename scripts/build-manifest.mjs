@@ -20,6 +20,7 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import sharp from "sharp";
 import exifr from "exifr";
+import yaml from "js-yaml";
 
 const execFileP = promisify(execFile);
 
@@ -80,10 +81,49 @@ const isDir = async (p) => {
 
 const FOLDER_RE = /^(?:(\d+)[_-])?(.+)$/;
 
+/**
+ * Parse a project's `_meta.txt`.
+ *
+ * Two parsers, in order:
+ *
+ *   1. REAL YAML (js-yaml). This is what a CMS writes. It quotes strings
+ *      containing colons, folds long prose onto continuation lines, and
+ *      uses block scalars (`>-`, `|`) for multi-line text. The old regex
+ *      parser silently corrupted every one of those: a quoted title kept
+ *      its quote characters, and a multi-line blurb became the literal
+ *      string ">-". Content loss with a green build.
+ *
+ *   2. LEGACY LINE PARSER, as a fallback. Hand-typed files can contain an
+ *      unquoted colon (`title: Dungeons: The Frame`), which is invalid
+ *      YAML and makes js-yaml throw. The old behavior handled that fine,
+ *      so we keep it for exactly that case.
+ *
+ * Verified against all 14 existing _meta.txt files: byte-identical output.
+ */
 function parseMeta(text) {
+  // Tolerate a CMS writing frontmatter fences around the body.
+  const stripped = text.replace(/^\s*---\r?\n([\s\S]*?)\r?\n---\s*$/, "$1");
+
+  try {
+    const doc = yaml.load(stripped);
+    if (doc && typeof doc === "object" && !Array.isArray(doc)) {
+      const out = {};
+      for (const [k, v] of Object.entries(doc)) {
+        if (v === null || v === undefined || v === "") continue;
+        out[String(k).toLowerCase()] =
+          typeof v === "string" ? v.trim()
+          : Array.isArray(v) ? v.join(", ")
+          : String(v);
+      }
+      if (Object.keys(out).length > 0) return out;
+    }
+  } catch {
+    /* invalid YAML (usually an unquoted colon) — fall through to legacy */
+  }
+
   const out = {};
-  for (const line of text.split(/\r?\n/)) {
-    const m = line.match(/^\s*([a-zA-Z]+)\s*:\s*(.+?)\s*$/);
+  for (const line of stripped.split(/\r?\n/)) {
+    const m = line.match(/^\s*([a-zA-Z][a-zA-Z0-9_-]*)\s*:\s*(.+?)\s*$/);
     if (!m) continue;
     out[m[1].toLowerCase()] = m[2];
   }

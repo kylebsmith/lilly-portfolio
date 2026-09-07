@@ -6,3 +6,9 @@ build/
 *.tsbuildinfo
 .env*.local
 .vercel
+
+# Working files — never commit these.
+# _compressed_videos/ is 167 MB of source/intermediate video on Kyle's
+# machine. Without this line, a "commit all" in GitHub Desktop would
+# push it into history permanently, where it can't be removed cleanly.
+_compressed_videos/
