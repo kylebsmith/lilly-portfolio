@@ -2,10 +2,12 @@ order: 4
 title: Lost In A Dream
 category: environments
 cover: cover.jpg
-gallery:
-  - thumbnails.jpg
 year: 2026
-medium: Digital
+medium: Photoshop
 size: 8.6 × 6.5 in
 date: January 2026
+use_file_details: true
 blurb: Surrealist illustration exploring "lost in a Dream"
+layout: standard
+video: https://vimeo.com/1224692126?share=copy&fl=sv&fe=ci
+hidden: false
