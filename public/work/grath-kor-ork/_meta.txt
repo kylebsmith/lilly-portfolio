@@ -1,0 +1,16 @@
+order: 12
+title: Grath Kor - Ork
+category: character-design
+cover: olnow_202630_illu721_lillypatterson_a3_characterdesign.jpg
+gallery:
+  - illu721_a3_grathkor.png
+  - illu721_a3_silhouettes.jpg
+year: 2026
+medium: Photoshop
+size: ''
+date: ''
+use_file_details: true
+blurb: Orc character design
+layout: standard
+video: ''
+hidden: false
