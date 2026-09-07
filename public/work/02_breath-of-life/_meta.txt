@@ -1,5 +1,5 @@
 order: 2
-title: Breath of Life
+title: Biomechanical Leviathan
 category: character-design
 cover: cover.jpg
 gallery:
@@ -11,4 +11,5 @@ date: January 2026
 use_file_details: true
 blurb: A creature design and style frame for a Magic the Gathering card - Educational Project
 layout: standard
+video: ''
 hidden: false
