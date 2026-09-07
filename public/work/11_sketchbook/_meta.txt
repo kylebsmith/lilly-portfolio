@@ -1,4 +1,4 @@
-order: 11
+order: 10
 title: Sketchbook
 category: sketch-book
 cover: cover.jpg
@@ -33,5 +33,5 @@ gallery:
   - pages-11.jpg
 year: 2025
 size: 14.9 × 9.7 in
-layout: gallery
 blurb: Pages from studio sketchbooks, lab studies, and the bound book.
+layout: gallery
