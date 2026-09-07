@@ -1,5 +1,7 @@
+order: 7
 title: The Recipe of a Culture
 category: book-illustration
+cover: cover.jpg
 year: 2026
 medium: Digital
 size: 8.6 × 6.6 in

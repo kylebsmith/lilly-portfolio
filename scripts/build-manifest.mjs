@@ -86,7 +86,12 @@ const isDir = async (p) => {
   try { return (await stat(p)).isDirectory(); } catch { return false; }
 };
 
-const FOLDER_RE = /^(?:(\d+)[_-])?(.+)$/;
+// Underscore only. With [_-], a CMS-created folder whose title starts with a
+// number ("2026 Sketches" -> 2026-sketches) was read as prefix 2026 + slug
+// "sketches": the site served /work/sketches while the editor showed
+// 2026-sketches, and a homeFavorites entry typed as the displayed name would
+// silently never match. Every existing folder uses NN_, so nothing regresses.
+const FOLDER_RE = /^(?:(\d+)_)?(.+)$/;
 
 /**
  * Parse a project's `_meta.txt`.
@@ -122,6 +127,12 @@ function parseMeta(text) {
         // it to a string here would silently discard her chosen order.
         out[String(k).toLowerCase()] =
           typeof v === "string" ? v.trim()
+          // A bare YYYY-MM-DD (or one with a time) is the shape js-yaml
+          // resolves to a Date object. String(date) would print
+          // "Mon Jan 05 2026 05:00:00 GMT-0500 (EST)" straight onto the
+          // project page. Format it the way the EXIF path already does.
+          : v instanceof Date
+            ? v.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" })
           : Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean)
           : String(v);
       }

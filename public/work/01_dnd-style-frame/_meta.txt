@@ -1,4 +1,6 @@
+order: 1
 title: Dungeons & Dragons — Style Frame
 category: character-design
+cover: cover.jpg
 year: 2026
 size: 16 × 9 in

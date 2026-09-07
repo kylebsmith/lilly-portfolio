@@ -31,10 +31,25 @@ const WRITE = process.argv.includes("--write");
 const ALL = process.argv.includes("--all");
 
 // Field order in the written file — reads top-down like a form.
-const ORDER = ["title", "category", "year", "medium", "size", "date", "layout", "video", "blurb"];
+const ORDER = ["order", "title", "category", "cover", "gallery", "year",
+               "medium", "size", "date", "layout", "video", "blurb", "hidden"];
 
-// Only these are frozen from EXIF. `title`/`category`/`year` are already explicit.
+// Frozen from EXIF.
 const FREEZE = ["medium", "size", "date", "blurb"];
+
+// Frozen from facts the build already knows implicitly. Both are REQUIRED for
+// the CMS to behave:
+//
+//   order  Sveltia computes a new entry's order as max(existing)+1. With no
+//          file carrying one, that is 1 — so a brand-new piece would sort to
+//          the very top, and the first drag would renumber everything from
+//          Sveltia's own list order rather than the folder prefixes. The
+//          homepage hero is projects[0], so that silently reassigns it.
+//
+//   cover  The `cover` field is REQUIRED in the CMS. With no cover: key, every
+//          existing project opens with an empty required field and Save is
+//          refused — blocking even a one-character typo fix on all of them.
+const DERIVE = ["order", "cover"];
 
 const tracked = new Set();
 try {
@@ -62,6 +77,23 @@ for (const p of projects) {
 
   const added = [];
   const next = { ...existing };
+
+  // Derived values, taken from what the manifest already computed so the
+  // rendered site cannot change.
+  if (next.order === undefined || next.order === null || next.order === "") {
+    if (Number.isFinite(p.order) && p.order !== 9999) {
+      next.order = p.order;
+      added.push("order");
+    }
+  }
+  if (next.cover === undefined || next.cover === null || next.cover === "") {
+    const first = p.images?.[0]?.src;
+    if (first) {
+      next.cover = first.split("/").pop();
+      added.push("cover");
+    }
+  }
+
   for (const key of FREEZE) {
     if (next[key] !== undefined && next[key] !== null && next[key] !== "") continue;
     const val = p[key];

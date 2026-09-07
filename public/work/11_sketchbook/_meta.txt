@@ -1,5 +1,7 @@
+order: 11
 title: Sketchbook
 category: sketch-book
+cover: cover.jpg
 year: 2025
 size: 14.9 × 9.7 in
 layout: gallery

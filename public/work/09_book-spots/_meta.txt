@@ -1,5 +1,7 @@
+order: 9
 title: Book Spots
 category: book-illustration
+cover: cover.png
 year: 2026
 medium: Digital
 size: 18.1 × 8.5 in

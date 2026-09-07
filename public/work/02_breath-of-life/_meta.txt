@@ -1,5 +1,7 @@
+order: 2
 title: Breath of Life
 category: character-design
+cover: cover.jpg
 year: 2026
 medium: Digital
 size: 6.2 × 8.6 in

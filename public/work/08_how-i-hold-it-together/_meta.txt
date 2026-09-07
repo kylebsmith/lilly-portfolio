@@ -1,4 +1,6 @@
+order: 8
 title: How I Hold It Together
 category: book-illustration
+cover: cover.png
 year: 2026
 size: 11 × 8.5 in

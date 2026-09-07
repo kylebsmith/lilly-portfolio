@@ -19,6 +19,9 @@ backend:
 
 publish_mode: simple      # no editorial/PR state for this editor to reason about
 
+# The browser tab. Sveltia overwrites index.html's <title> once it boots.
+app_title: Lilly Patterson Site Editor
+
 site_url: https://www.lillybpatterson.com
 display_url: https://www.lillybpatterson.com
 
@@ -81,7 +84,11 @@ collections:
     format: yaml
 
     create: true
-    delete: true
+    # Deliberately false. Delete would remove the folder and every image in it
+    # in a single commit, with no undo inside the editor. The `hidden` field
+    # is the retirement path: it takes a piece off the site and keeps the work.
+    # Permanent removal stays a developer action.
+    delete: false
     duplicate: false
 
     # [LB] Drag-and-drop reordering. Renumbers from 1 and writes an `order` key;
@@ -148,8 +155,9 @@ collections:
         accept: image/jpeg,image/png,image/webp,image/avif
         choose_url: false
         hint: >-
-          The other images on this project's page. The site sorts them
-          alphabetically after the cover.
+          The order the other images appear on this project's page. Drag to
+          reorder them. Taking one out of this list only moves it to the end -
+          to remove an image from the site, delete the file itself.
 
       - { name: year, label: Year, widget: number, value_type: int,
           min: 1990, max: 2100, step: 1, default: 2026 }
