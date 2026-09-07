@@ -1,0 +1,16 @@
+order: 11
+title: Zora - Conceptual Valorant Agent
+category: character-design
+cover: Agent Card Mockup.jpg
+gallery:
+  - olnow_202630_illu721_lillypatterson_a4_videogamecharacter.png
+  - Color Comp.jpg
+year: 2026
+medium: Photoshop
+size: ''
+date: ''
+use_file_details: true
+blurb: Conceptual design for a Valorant Drone Pilot sentinel agent
+layout: standard
+video: ''
+hidden: false
