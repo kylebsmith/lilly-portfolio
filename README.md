@@ -91,6 +91,12 @@ cases a person can clear from the CMS: unknown category, a present
 else warns. `hidden: true` is checked before validation, so it clears any
 hard error — that is what makes hard errors safe.
 
+## Maintenance
+
+[MAINTENANCE.md](MAINTENANCE.md) — token renewal, restoring content,
+upgrading the vendored CMS bundle, adding a category, media policy, and
+the local `node_modules` corruption on this Mac.
+
 ## Deploy
 
 See [DEPLOY.md](DEPLOY.md). Push to `main`; Vercel builds in ~60s.
