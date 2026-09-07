@@ -1,4 +1,4 @@
-order: 9
+order: 7
 title: Girl with The Dragon Tattoo Interior - Conceptual Piece
 category: book-illustration
 cover: cover.png
