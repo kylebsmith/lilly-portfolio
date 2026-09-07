@@ -1,0 +1,316 @@
+# Sveltia CMS v0.207.1 - lillybpatterson.com
+# Served from public/admin/ -> /admin/. Sign-in: built-in "Sign in with Token"
+# (fine-grained GitHub PAT). No OAuth proxy, no server, no database.
+# Lines marked [LB] are load-bearing: each has a specific failure mode if
+# changed. Read the handover notes before touching one.
+
+backend:
+  name: github
+  repo: kylebsmith/lilly-portfolio
+  branch: main            # the branch Vercel builds; a commit here is a deploy
+  # No base_url/auth_type/app_id - those are for an OAuth proxy or GitHub App.
+  # PAT sign-in needs no config at all.
+  commit_messages:
+    create: 'Add project "{{slug}}"'
+    update: 'Update "{{slug}}"'
+    delete: 'Remove project "{{slug}}"'
+    uploadMedia: 'Upload {{path}}'
+    deleteMedia: 'Delete {{path}}'
+
+publish_mode: simple      # no editorial/PR state for this editor to reason about
+
+site_url: https://www.lillybpatterson.com
+display_url: https://www.lillybpatterson.com
+
+# Fallback only. A global media_folder is REQUIRED when no cloud storage is
+# configured; the Projects collection overrides it with entry-relative folders.
+media_folder: public/uploads
+public_folder: /uploads
+
+media_libraries:
+  default:
+    config:
+      max_file_size: 10485760   # 10 MiB, rejected in-browser before any commit
+      slugify_filename: true    # [LB] filenames become URL segments
+      # DELIBERATELY ABSENT: transformations. Re-encoding would strip the
+      # EXIF/IPTC/XMP that build-manifest.mjs reads for medium/size/date/blurb.
+
+output:
+  # [LB] Without this an untouched optional field is written as `key: ''`, a
+  # PRESENT key, which suppresses build-manifest's EXIF fallback and renders an
+  # empty blurb. Only acts on fields declared `required: false` - and `required`
+  # defaults to TRUE, so every optional field below sets it explicitly.
+  omit_empty_optional_fields: true
+  yaml:
+    # [LB] 'none' still auto-quotes anything ambiguous (yes/no/true/12:30/
+    # "- 5 in"/"Girl: A Study" all verified to round-trip). Chosen over 'double'
+    # because build-manifest keeps a legacy regex fallback that returns values
+    # WITH their quote characters; fewer quotes = less it can corrupt.
+    # Sole exception, guarded by the `date` pattern below: a bare YYYY-MM-DD is
+    # the one shape js-yaml turns into a Date object instead of a string.
+    quote: none
+    indent_size: 2
+    indent_sequences: true
+  json:
+    indent_style: space
+    indent_size: 2
+
+# Slugs become folder names and URL segments; titles here contain em dashes.
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+
+collections:
+  - name: work
+    label: Projects
+    label_singular: Project
+    icon: palette
+    description: >-
+      Every piece in your portfolio. Drag the rows to change the order they
+      appear on the site. The piece at the top is the big one on the homepage.
+
+    # [LB] folder + path -> public/work/<slug>/_meta.txt
+    # Generates ^public\/work\/(?<subPath>[^/]+?\/_meta)\.txt$ - matches all 14
+    # existing numbered folders, excludes cover.jpg and _manifest.json.
+    # `format: yaml` is MANDATORY: without it the 'txt' extension has no mapping
+    # and Sveltia falls back to yaml-frontmatter, wrapping files in `---` fences.
+    folder: public/work
+    path: '{{slug}}/_meta'
+    extension: txt
+    format: yaml
+
+    create: true
+    delete: true
+    duplicate: false
+
+    # [LB] Drag-and-drop reordering. Renumbers from 1 and writes an `order` key;
+    # new entries get max(order)+1 at save. `order` is intentionally NOT in
+    # `fields` - it is managed by the reorder UI, written ahead of the declared
+    # fields, and (having no field config) can never be stripped by
+    # omit_empty_optional_fields.
+    reorder: true
+
+    identifier_field: title
+    summary: '{{title}}'
+    thumbnail: cover
+
+    sortable_fields:
+      fields: [title, year, category]
+      default: { field: title, direction: ascending }
+
+    view_groups:
+      - { name: category, label: Category, field: category }
+
+    # [LB] Entry-relative media. Both MUST be the empty string.
+    #   media_folder: '' -> uploads land in this project's own folder,
+    #                       e.g. public/work/02_breath-of-life/<file>
+    #   public_folder: '' -> the stored value is the BARE FILENAME
+    #                       (`cover: cover.jpg`), not a path. '.' would store
+    #                       './cover.jpg' instead - don't.
+    # build-manifest.mjs joins it back at build time as /work/<folder>/<file>.
+    media_folder: ''
+    public_folder: ''
+
+    fields:
+      - { name: title, label: Title, widget: string }
+
+      # [LB] The four slugs in projects.ts VISIBLE_CATEGORIES. Anything else
+      # falls into the hidden "vis-dev" bucket and loses its filter chip.
+      - name: category
+        label: Category
+        widget: select
+        default: character-design
+        options:
+          - { label: Character Design, value: character-design }
+          - { label: Environments, value: environments }
+          - { label: Book Illustration, value: book-illustration }
+          - { label: Sketchbook, value: sketch-book }
+
+      # Required: build-manifest skips any project with no image, so a
+      # coverless project would silently vanish from the site.
+      # `accept` matches what build-manifest globs - a .psd would upload fine
+      # and then be invisible with no error anywhere.
+      - name: cover
+        label: Cover image
+        widget: image
+        accept: image/jpeg,image/png,image/webp,image/avif
+        choose_url: false
+        hint: >-
+          The thumbnail for this piece, on the Work page and on the homepage
+          if this is the top project.
+
+      - name: gallery
+        label: More images
+        widget: image
+        multiple: true
+        required: false
+        accept: image/jpeg,image/png,image/webp,image/avif
+        choose_url: false
+        hint: >-
+          The other images on this project's page. The site sorts them
+          alphabetically after the cover.
+
+      - { name: year, label: Year, widget: number, value_type: int,
+          min: 1990, max: 2100, step: 1, default: 2026 }
+
+      - name: medium
+        label: Medium
+        widget: string
+        required: false
+        hint: >-
+          e.g. "Digital", "Watercolor". Leave blank to read it from the file's
+          Photoshop metadata.
+
+      - name: size
+        label: Size
+        widget: string
+        required: false
+        hint: >-
+          e.g. "8.6 x 6.5 in". Leave blank to calculate it from the image's
+          pixel size and DPI.
+
+      # A string, NOT a datetime: existing files hold prose ("January 2026")
+      # and build-manifest prints it verbatim. The pattern blocks a bare
+      # YYYY-MM-DD, the one shape js-yaml resolves to a Date object at
+      # quote:none. "2026-01" and "2026" are still allowed.
+      - name: date
+        label: Date
+        widget: string
+        required: false
+        hint: >-
+          e.g. "January 2026". Printed as-is. Leave blank to use the date
+          stored inside the image file.
+        pattern:
+          - '^(?!\d{4}-\d{2}-\d{2}$).+'
+          - Please write the date in words, like "January 2026".
+
+      - name: blurb
+        label: Description
+        widget: text
+        required: false
+        hint: >-
+          A sentence or two. Leave blank to use the description you wrote in
+          Photoshop's caption field.
+
+      # Block mappings, not { } flow mappings: a comma inside a flow mapping
+      # starts a new key, and these labels contain commas.
+      - name: layout
+        label: Page layout
+        widget: select
+        required: false
+        default: standard
+        options:
+          - label: 'Standard - big hero image, then the rest'
+            value: standard
+          - label: 'Gallery - one even grid, no hero'
+            value: gallery
+
+      - name: video
+        label: Vimeo link
+        widget: string
+        required: false
+        hint: 'Optional. Paste a Vimeo URL, e.g. https://vimeo.com/123456789'
+        pattern:
+          - '^https?://(www\.)?vimeo\.com/.+'
+          - Please paste a full Vimeo link starting with https://vimeo.com/
+
+      # The retirement mechanism. build-manifest.mjs checks this BEFORE any
+      # validation, so switching a piece to Hidden also clears any content
+      # error it was raising — it is the universal escape hatch, and the
+      # reason hard errors are safe to have at all.
+      # Deliberately last: it is the least-used field and should not sit
+      # between the ones she edits constantly.
+      - name: hidden
+        label: Hide from the site
+        widget: boolean
+        required: false
+        default: false
+        hint: >-
+          Turn this on to take the piece off the website without deleting it.
+          Everything is kept and you can turn it back on any time.
+
+      - name: clips
+        label: Video files
+        widget: file
+        multiple: true
+        required: false
+        accept: video/mp4,video/quicktime,video/webm
+        choose_url: false
+        hint: >-
+          Optional. Short clips shown on the project page. Prefer a Vimeo link
+          for anything long - these are committed into the site itself.
+        media_libraries:
+          default:
+            config: { max_file_size: 52428800, slugify_filename: true }
+
+# SITE SETTINGS - READ BEFORE EDITING.
+# content/site.ts is TypeScript and Sveltia has no TypeScript format, so it is
+# NOT a CMS target. Prose moves to a new JSON file the CMS owns; `url` and `nav`
+# stay in TypeScript, where the CMS cannot reach them:
+#   content/site-content.json  <- NEW, CMS-owned, exactly the keys below
+#   content/site.ts            <- imports that JSON, keeps url + nav as literals
+# layout.tsx does new URL(site.url) and sitemap.ts/robots.ts interpolate it;
+# nav drives Nav.tsx and Footer.tsx. A blank value there throws at build time.
+# JSON not YAML: tsconfig already has resolveJsonModule + content/**/*.json.
+# Every field here is REQUIRED on purpose - omit_empty_optional_fields would
+# drop an emptied optional key and site.social.map(...) would throw at build.
+singletons:
+  - name: site_content
+    label: About & Contact
+    file: content/site-content.json
+    icon: person
+    description: >-
+      Your name, bio, email and links. These appear on the About and Contact
+      pages and in the footer.
+    fields:
+      - { name: name, label: Your name, widget: string }
+      - name: tagline
+        label: Tagline
+        widget: string
+        hint: Shown next to your name in the browser tab and link previews.
+      - name: description
+        label: Search-engine description
+        widget: text
+        hint: One sentence. Shown by Google and when a link is shared.
+      - name: email
+        label: Email
+        widget: string
+        pattern:
+          - '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+          - That does not look like an email address
+
+      # `field` (singular) -> stored as a plain string[], which is what
+      # site.about.bio maps over. `fields` (plural) would store objects.
+      # No `summary`: with a single subfield the value is at bio.0, not
+      # bio.0.text, so '{{fields.text}}' would resolve to nothing.
+      - name: bio
+        label: About paragraphs
+        widget: list
+        hint: One paragraph per item. Drag to reorder.
+        field: { name: text, label: Paragraph, widget: text }
+
+      - { name: location, label: Location, widget: string, hint: 'e.g. Atlanta, GA' }
+      - { name: program, label: Program, widget: string,
+          hint: 'e.g. MFA Illustration, SCAD Atlanta' }
+
+      - name: social
+        label: Social links
+        widget: list
+        summary: '{{fields.label}}'
+        fields:
+          - { name: label, label: Name, widget: string }
+          - name: href
+            label: Link
+            widget: string
+            pattern: ['^https?://.+', 'Links must start with https://']
+
+      # Free text rather than a relation widget: an unmatched slug is already
+      # harmless, because featuredProjects() silently skips slugs with no match.
+      - name: homeFavorites
+        label: Homepage favorites
+        widget: list
+        hint: >-
+          The URL names of the pieces in the "a few favorites" strip, in order.
+          A piece's URL name is the part after /work/ in its address.
+        field: { name: slug, label: Piece, widget: string }

@@ -37,7 +37,24 @@ const config: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      // The CMS admin page must never appear in search results. This header is
+      // the authoritative signal (a robots.txt Disallow would be worse: it
+      // stops crawlers fetching the page, so they'd never see the noindex).
+      {
+        source: "/admin/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+      {
+        source: "/admin",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
     ];
+  },
+  // Next.js serves public/admin/index.html only at the literal path
+  // /admin/index.html. Bare /admin is a 404, and /admin/ redirects (308) to
+  // /admin — straight into that 404. This rewrite makes the memorable URL work.
+  async rewrites() {
+    return [{ source: "/admin", destination: "/admin/index.html" }];
   },
   experimental: {
     optimizePackageImports: ["motion", "gsap"],

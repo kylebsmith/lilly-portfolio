@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Keep this page out of search results. Sveltia injects a noindex tag of
+         its own once it boots, but that is too late for crawlers that don't run
+         JavaScript - so it is declared statically here as well. The matching
+         X-Robots-Tag header is set in next.config.ts. -->
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <meta name="referrer" content="same-origin" />
+
+    <!-- Only shown before the editor boots, and if it never does. Once Sveltia
+         starts it replaces this with the `app_title` value from config.yml. -->
+    <title>Site Editor &middot; Lilly Patterson</title>
+    <link rel="icon" href="/favicon.svg" />
+
+    <!-- Where the editor's settings live. Sveltia can find this on its own, but
+         stating it means the path cannot be resolved wrong if this page is ever
+         reached as /admin, /admin/ or /admin/index.html. Must stay same-origin:
+         Sveltia rejects a cross-origin config URL. -->
+    <link rel="cms-config-url" type="application/yaml" href="/admin/config.yml" />
+
+    <style>
+      html { color-scheme: light dark; }
+      body { margin: 0; }
+
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: #f7f6f3;
+        color: #22201d;
+        font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      @media (prefers-color-scheme: dark) {
+        #boot { background: #1a1917; color: #ece9e3; }
+      }
+      #boot-inner { max-width: 30rem; text-align: center; }
+      #boot h1 { margin: 0 0 0.5rem; font-size: 1.125rem; font-weight: 600; }
+      #boot p { margin: 0.5rem 0 0; opacity: 0.75; }
+      #boot a { color: inherit; }
+
+      .spinner {
+        width: 22px; height: 22px; margin: 0 auto 1.25rem;
+        border: 2px solid currentColor; border-right-color: transparent;
+        border-radius: 50%; opacity: 0.45;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+
+      #boot[data-state="loading"] .failed,
+      #boot[data-state="failed"] .loading,
+      #boot[data-state="failed"] .spinner { display: none; }
+    </style>
+  </head>
+
+  <body>
+    <!-- Plain-English holding screen: no code, no git, no jargon. -->
+    <div id="boot" data-state="loading">
+      <div id="boot-inner">
+        <div class="spinner"></div>
+        <div class="loading">
+          <h1>Opening your site editor&hellip;</h1>
+          <p>This can take a few seconds the first time.</p>
+        </div>
+        <div class="failed">
+          <h1>The editor didn't open</h1>
+          <p>
+            Your website itself is fine and is still online &mdash; only this
+            editing page failed to load.
+          </p>
+          <p>
+            Check your internet connection and <a href="/admin">try again</a>.
+            If it still doesn't open, let Kyle know.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <div style="padding:24px;font:16px/1.6 system-ui,sans-serif">
+        <h1 style="font-size:1.125rem">JavaScript is switched off</h1>
+        <p>The site editor needs JavaScript. Please turn it on and reload this page.</p>
+      </div>
+    </noscript>
+
+    <!--
+      This runs BEFORE the editor script so that __cmsFailed already exists if
+      that script 404s and fires its onerror handler.
+    -->
+    <script>
+      (function () {
+        var boot = document.getElementById("boot");
+        if (!boot) return;
+
+        window.__cmsFailed = function () {
+          boot.setAttribute("data-state", "failed");
+        };
+
+        // The editor renders into <body>. The moment anything of its own
+        // appears, drop the holding screen.
+        function mounted() {
+          for (var i = 0; i < document.body.children.length; i++) {
+            var el = document.body.children[i];
+            if (el !== boot && el.tagName !== "SCRIPT" && el.tagName !== "NOSCRIPT") {
+              return true;
+            }
+          }
+          return false;
+        }
+
+        var watcher = new MutationObserver(function () {
+          if (mounted()) {
+            watcher.disconnect();
+            boot.remove();
+          }
+        });
+        watcher.observe(document.body, { childList: true });
+
+        // Nothing rendered after 30s means the script is broken or blocked.
+        setTimeout(function () {
+          if (document.body.contains(boot)) window.__cmsFailed();
+        }, 30000);
+      })();
+    </script>
+
+    <!--
+      Sveltia CMS v0.207.1 - vendored deliberately.
+      This file is committed to the repository and served from our own domain,
+      so no outside service can ever take the editor offline.
+      sha256 84c94d27064d2f189d8a82ec8ca0f3690ae4497a63ebb409ad3811d51675fd06
+
+      Do NOT add type="module": the bundle is a plain IIFE and the Sveltia docs
+      explicitly warn that adding it stops the CMS from starting.
+    -->
+    <script
+      src="/admin/sveltia-cms.js"
+      onerror="window.__cmsFailed && window.__cmsFailed()"
+    ></script>
+  </body>
+</html>

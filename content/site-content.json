@@ -1,0 +1,18 @@
+{
+  "name": "Lilly Patterson",
+  "tagline": "Illustration · Visual Development",
+  "description": "Portfolio of Lilly Patterson — illustrator and visual development artist.",
+  "email": "lillybpatterson@gmail.com",
+  "bio": [
+    "I am an illustrator with a love for storytelling through character and design.",
+    "I grew up in Steamboat Springs, Colorado, and earned my Bachelor of Arts from the University of Colorado Boulder. I am now pursuing my Master of Fine Arts in Illustration at The Savannah College of Art and Design, Atlanta, where I continue to develop my skills in concept art, character design, and visual development.",
+    "My artistic style reflects a whimsical perspective on everyday life, inspired by subtle, quiet moments and the connections I find in the world around me. I am constantly drawn to the simplest things — strange insects, shifting light, fleeting details, anything to make me stop and look closer.",
+    "My illustrations have been featured by Minds in Motion for mental health awareness campaigns and recognized by the University of Colorado Boulder Student Arts Program. I have also performed live illustration as a part of “Omnimodal,” a multi-media performance hosted by the Serenbe Art Farm."
+  ],
+  "location": "Atlanta, GA",
+  "program": "MFA Illustration, SCAD Atlanta",
+  "social": [
+    { "label": "Instagram", "href": "https://www.instagram.com/lilly_padd_art" }
+  ],
+  "homeFavorites": ["breath-of-life", "lost-in-a-dream", "girl-with-a-dragon-tattoo"]
+}

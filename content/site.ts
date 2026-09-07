@@ -1,25 +1,39 @@
 /* ───────────────────────────────────────────────────────────
- *  ✦ This is your site's name, email, links, and bio. ✦
+ *  ✦ Site settings ✦
  *
- *  Edit the values inside the quotes. Don't delete the
- *  commas or the curly braces.
+ *  MOST OF THIS FILE IS NO LONGER EDITED BY HAND.
+ *
+ *  Your name, tagline, bio, email, social links and homepage
+ *  favorites now live in `site-content.json`, right next to this
+ *  file — and you edit them in the website editor at /admin,
+ *  under "About & Contact". You never need to open either file.
+ *
+ *  Two values deliberately stay here in code, where the editor
+ *  cannot reach them, because a typo in either one breaks the
+ *  whole site rather than one page:
+ *
+ *    url  — feeds new URL() in layout.tsx and every sitemap entry.
+ *           A malformed value throws at build time.
+ *    nav  — the top navigation. A bad href here is a broken link
+ *           on every single page.
  *  ───────────────────────────────────────────────────────── */
 
+import content from "./site-content.json";
+
 export const site = {
-  name: "Lilly Patterson",
-  tagline: "Illustration · Visual Development",
-  description:
-    "Portfolio of Lilly Patterson — illustrator and visual development artist.",
-  email: "lillybpatterson@gmail.com",
+  name: content.name,
+  tagline: content.tagline,
+  description: content.description,
+  email: content.email,
+
+  /* The canonical address. The apex domain 307-redirects here, so this
+     must stay on www — it is what sitemap.ts, robots.ts and every Open
+     Graph tag advertise. */
   url: "https://www.lillybpatterson.com",
 
-  // Replace these with your real handles. To remove one,
-  // delete the whole {…}, line including the comma.
-  social: [
-    { label: "Instagram", href: "https://www.instagram.com/lilly_padd_art" },
-  ],
+  social: content.social,
 
-  // The top navigation. Order = order shown.
+  /* The top navigation. Order = order shown. */
   nav: [
     { label: "Work", href: "/work" },
     { label: "About", href: "/about" },
@@ -27,21 +41,16 @@ export const site = {
   ],
 
   about: {
-    // Each item in the array is one paragraph on the /about page.
-    bio: [
-      "I am an illustrator with a love for storytelling through character and design.",
-      "I grew up in Steamboat Springs, Colorado, and earned my Bachelor of Arts from the University of Colorado Boulder. I am now pursuing my Master of Fine Arts in Illustration at The Savannah College of Art and Design, Atlanta, where I continue to develop my skills in concept art, character design, and visual development.",
-      "My artistic style reflects a whimsical perspective on everyday life, inspired by subtle, quiet moments and the connections I find in the world around me. I am constantly drawn to the simplest things — strange insects, shifting light, fleeting details, anything to make me stop and look closer.",
-      "My illustrations have been featured by Minds in Motion for mental health awareness campaigns and recognized by the University of Colorado Boulder Student Arts Program. I have also performed live illustration as a part of “Omnimodal,” a multi-media performance hosted by the Serenbe Art Farm.",
-    ],
-    location: "Atlanta, GA",
-    program: "MFA Illustration, SCAD Atlanta",
+    /* Each item is one paragraph on the /about page. */
+    bio: content.bio,
+    location: content.location,
+    program: content.program,
   },
 
-  // The slugs that appear in the "a few favorites" strip on the home page,
-  // in the order they appear. The hero piece (project folder `01_*`) is
-  // shown above this and is not duplicated. Missing slugs are skipped.
-  homeFavorites: ["breath-of-life", "lost-in-a-dream", "girl-with-a-dragon-tattoo"],
+  /* Slugs shown in the "a few favorites" strip on the home page, in order.
+     The hero piece (the top project) appears above this and is not repeated.
+     Slugs that match no project are silently skipped. */
+  homeFavorites: content.homeFavorites,
 } as const;
 
 export type Site = typeof site;
