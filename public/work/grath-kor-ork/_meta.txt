@@ -1,4 +1,4 @@
-order: 12
+order: 3
 title: Grath Kor - Ork
 category: character-design
 cover: olnow_202630_illu721_lillypatterson_a3_characterdesign.jpg
