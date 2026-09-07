@@ -28,6 +28,10 @@ const config: NextConfig = {
   reactStrictMode: true,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Next 16 requires every quality value used in code to be declared here.
+    // Undeclared values are silently clamped to the default 75 — which was
+    // quietly downgrading the artwork this whole site exists to show.
+    qualities: [75, 88, 90, 92, 95],
     deviceSizes: [320, 480, 640, 768, 1024, 1280, 1536, 1920, 2560],
     imageSizes: [16, 32, 64, 96, 128, 256, 384, 512, 768],
   },

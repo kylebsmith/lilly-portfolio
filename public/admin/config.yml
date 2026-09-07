@@ -260,9 +260,6 @@ singletons:
     label: About & Contact
     file: content/site-content.json
     icon: person
-    description: >-
-      Your name, bio, email and links. These appear on the About and Contact
-      pages and in the footer.
     fields:
       - { name: name, label: Your name, widget: string }
       - name: tagline
