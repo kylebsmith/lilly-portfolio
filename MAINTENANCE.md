@@ -6,6 +6,36 @@ the site when something is actually wrong.
 
 ---
 
+## Vercel must know her too — not just GitHub
+
+**Repo access is not enough.** Vercel's Hobby plan only builds commits whose
+git author has access to the *Vercel project*. Lilly's first three edits
+committed to GitHub perfectly and then failed to deploy with:
+
+    Git author lillybpatterson-art must have access to the project on
+    Vercel to create deployments.
+
+Her content was valid — the full production build passed on all three — and
+the site kept serving the previous version, so nothing broke. But her work was
+invisible, and nothing in the editor told her why. From her side, she saved and
+the site simply did not change.
+
+**The fix is to add her to the Vercel project, which requires Pro** ($20/month).
+Vercel dashboard → the `kyle-2447's projects` team → **Settings → Members →
+Invite**, using the GitHub account `lillybpatterson-art`. Pro also settles the
+non-commercial-terms question below, since the site advertises commissions.
+
+**Stopgap if it happens again before that:** any commit authored by the account
+owner makes Vercel build the current tree, including her unpublished work.
+
+    git pull && git commit --allow-empty -m "Redeploy: publish Lilly's edits" && git push
+
+**Rejected alternatives.** Deploy hooks do *not* help — Vercel reads the author
+off the latest commit no matter how the build was triggered. The free
+workaround is a GitHub Action that rewrites the author on the CI runner and
+deploys via the Vercel CLI, which works but adds a workflow, three secrets and
+a rotating Vercel token to a project whose whole point is being maintainable.
+
 ## Why she uses a CLASSIC token, not a fine-grained one
 
 Sveltia's "Sign In Using Access Token" button deep-links to GitHub's

@@ -167,7 +167,12 @@ Hidden and Save.** That always clears the problem.
 ### Other things
 
 **"I made a change and the site looks the same."**
-Give it a minute and reload. Builds take about 60 seconds.
+Give it a minute and reload — updates take about 60 seconds.
+
+If it still hasn't changed after a few minutes, **your work is safe** — it's
+saved, it just hasn't been published yet. Tell Kyle "my edit didn't go
+live" and he can push it out in a few seconds. This is a setting on his
+side, not anything you did wrong.
 
 **"The editor asks me to sign in again."**
 Your token expired, or you're on a different computer. Repeat the steps
