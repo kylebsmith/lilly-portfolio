@@ -4,11 +4,12 @@ category: character-design
 cover: cover.jpg
 gallery:
   - azael-design.jpg
-  - oop.jpg
 year: 2026
 medium: Photoshop
 size: 16 × 9 in
+date: ''
 use_file_details: true
 blurb: Character design and style frame - Inspired by DnD Drow elf lore
 layout: standard
+video: ''
 hidden: false
