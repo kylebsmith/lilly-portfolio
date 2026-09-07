@@ -4,20 +4,21 @@ category: sketch-book
 cover: mfa-livingroom.jpg
 gallery:
   - lab-no2.jpg
-  - lab-no3-02.jpg
-  - mfa-blueberries.jpg
   - mfa-cleaningcart-01.jpg
-  - mfa-livingroom.jpg
-  - mfa-mugcake.jpg
-  - mfa-orchid.jpg
-  - mfa-page-01.jpg
-  - pages-05.jpg
   - pages-08.jpg
+  - mfa-blueberries.jpg
+  - mfa-livingroom.jpg
+  - pages-05.jpg
   - pages-09.jpg
-  - pages-10.jpg
+  - mfa-mugcake.jpg
+  - mfa-page-01.jpg
+  - mfa-orchid.jpg
 year: 2025
+medium: ''
 size: 14.9 × 9.7 in
+date: ''
 use_file_details: true
 blurb: Pages from studio sketchbooks, lab studies, and the bound book.
 layout: gallery
+video: ''
 hidden: false
