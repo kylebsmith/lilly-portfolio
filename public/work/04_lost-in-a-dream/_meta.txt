@@ -9,5 +9,5 @@ date: January 2026
 use_file_details: true
 blurb: Surrealist illustration exploring "lost in a Dream"
 layout: standard
-video: https://vimeo.com/1224692126?share=copy&fl=sv&fe=ci
+video: https://vimeo.com/1224704856?share=copy&fl=sv&fe=ci
 hidden: false
