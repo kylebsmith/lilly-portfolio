@@ -203,6 +203,42 @@ const FOLDER_RE = /^(?:(\d+)_)?(.+)$/;
  *
  * Verified against all 14 existing _meta.txt files: byte-identical output.
  */
+// Fields whose value is a LIST of filenames. For these, and only these, an
+// empty value must survive as [] rather than vanishing — a MISSING key means
+// "publish every file on disk", so a dropped key silently republishes
+// everything she just deleted.
+const LIST_KEYS = new Set(["gallery", "clips"]);
+
+// Which branch of parseMeta produced this object. Non-enumerable on purpose:
+// the "parsed to nothing" check counts Object.keys(metaTxt), and the stray-file
+// check spreads the parsed values — a visible key would corrupt both.
+const PARSE_MODE = Symbol("parseMode");
+const markParsed = (out, mode) =>
+  Object.defineProperty(out, PARSE_MODE, { value: mode, enumerable: false });
+
+/**
+ * Has this file been written by the editor?
+ *
+ * This matters because Sveltia CANNOT write an empty list. For a multiple
+ * image/file field it stores each item under its own numbered key
+ * (`gallery.0`, `gallery.1`); removing the last item deletes the last key and
+ * leaves nothing behind. So "she emptied the box" and "this file predates the
+ * editor" produce byte-identical files — and we read a missing list as
+ * "publish everything", which handed her back every image she had just removed.
+ *
+ * `use_file_details` is `required: true` in public/admin/config.yml, so every
+ * save writes it and no save can drop it. None of the pre-editor folders has
+ * it. That makes it a reliable "this file came from the editor" marker.
+ *
+ * Gated on the YAML branch deliberately. The legacy line parser matches
+ * `use_file_details: true` but cannot match a block list, so one unquoted colon
+ * in a title would make a file look editor-managed with every list missing —
+ * and silently destroy its gallery.
+ */
+const isCmsManaged = (metaTxt) =>
+  metaTxt[PARSE_MODE] === "yaml" &&
+  Object.prototype.hasOwnProperty.call(metaTxt, "use_file_details");
+
 function parseMeta(text) {
   // Tolerate a CMS writing frontmatter fences around the body.
   const stripped = text.replace(/^\s*---\r?\n([\s\S]*?)\r?\n---\s*$/, "$1");
@@ -212,7 +248,13 @@ function parseMeta(text) {
     if (doc && typeof doc === "object" && !Array.isArray(doc)) {
       const out = {};
       for (const [k, v] of Object.entries(doc)) {
-        if (v === null || v === undefined || v === "") continue;
+        if (v === null || v === undefined || v === "") {
+          // A bare `gallery:` is valid YAML whose value is null. Dropping the
+          // key would mean "publish everything on disk" — the exact bug this
+          // whole mechanism exists to prevent.
+          if (LIST_KEYS.has(String(k).toLowerCase())) out[String(k).toLowerCase()] = [];
+          continue;
+        }
         // Arrays are preserved as arrays: the CMS writes `gallery` as a
         // YAML list and image ordering depends on that structure. Flattening
         // it to a string here would silently discard her chosen order.
@@ -227,19 +269,37 @@ function parseMeta(text) {
           : Array.isArray(v) ? v.map((x) => String(x).trim()).filter(Boolean)
           : String(v);
       }
-      if (Object.keys(out).length > 0) return out;
+      if (Object.keys(out).length > 0) return markParsed(out, "yaml");
     }
   } catch {
     /* invalid YAML (usually an unquoted colon) — fall through to legacy */
   }
 
   const out = {};
-  for (const line of stripped.split(/\r?\n/)) {
-    const m = line.match(/^\s*([a-zA-Z][a-zA-Z0-9_-]*)\s*:\s*(.+?)\s*$/);
+  const lines = stripped.split(/\r?\n/);
+  for (let i = 0; i < lines.length; i++) {
+    // `gallery:` alone on a line followed by `  - a.jpg` items is a YAML block
+    // sequence. The old key/value regex matched NEITHER line, so a file that
+    // fell back to this parser lost its lists entirely.
+    const head = lines[i].match(/^\s*([a-zA-Z][a-zA-Z0-9_-]*)\s*:\s*$/);
+    if (head) {
+      const key = head[1].toLowerCase();
+      const items = [];
+      while (i + 1 < lines.length && /^\s*-\s+/.test(lines[i + 1])) {
+        items.push(lines[++i].replace(/^\s*-\s+/, "").trim().replace(/^["']|["']$/g, ""));
+      }
+      // Only list-valued keys become arrays. Every other consumer assumes a
+      // string — `metaTxt.blurb.trim()` throws on an array and kills the build.
+      if (items.length > 0 || LIST_KEYS.has(key)) out[key] = items;
+      continue;
+    }
+    const m = lines[i].match(/^\s*([a-zA-Z][a-zA-Z0-9_-]*)\s*:\s*(.+?)\s*$/);
     if (!m) continue;
-    out[m[1].toLowerCase()] = m[2];
+    const key = m[1].toLowerCase();
+    // An emptied list can also arrive inline as `gallery: []`.
+    out[key] = m[2].trim() === "[]" && LIST_KEYS.has(key) ? [] : m[2];
   }
-  return out;
+  return markParsed(out, "legacy");
 }
 
 const slugify = (s) =>
@@ -296,7 +356,7 @@ function orderImages(imageFiles, metaTxt) {
   // A MISSING `gallery` key still means "publish everything", so projects
   // predating the editor are untouched, and a save that fails to write the key
   // degrades to showing too much rather than silently emptying a page.
-  if (Object.prototype.hasOwnProperty.call(metaTxt, "gallery")) {
+  if (isCmsManaged(metaTxt) || Object.prototype.hasOwnProperty.call(metaTxt, "gallery")) {
     return picked.length > 0 ? picked : imageFiles.slice(0, 1);
   }
   if (picked.length === 0) return imageFiles;
@@ -327,7 +387,7 @@ function orderClips(videoFiles, metaTxt) {
   // Without this she could not remove a video at all — and three projects were
   // publishing a heavy local .mp4 alongside the Vimeo embed she had added to
   // replace it.
-  if (Object.prototype.hasOwnProperty.call(metaTxt, "clips")) return picked;
+  if (isCmsManaged(metaTxt) || Object.prototype.hasOwnProperty.call(metaTxt, "clips")) return picked;
   if (picked.length === 0) return videoFiles;
   return [...picked, ...videoFiles.filter((f) => !picked.includes(f))];
 }
@@ -786,7 +846,9 @@ async function main() {
           `piece but not shown on the site — ${stray.slice(0, 6).join(", ")}` +
           `${stray.length > 6 ? `, and ${stray.length - 6} more` : ""}. ` +
           `That is expected if you removed ${stray.length > 1 ? "them" : "it"} in the editor. ` +
-          `Ask Kyle to delete the file${stray.length > 1 ? "s" : ""} if you want the space back.`);
+          `To delete ${stray.length > 1 ? "them" : "it"} for good, open the Media view in the ` +
+          `editor, find ${stray.length > 1 ? "them" : "it"} in this project's folder and delete ` +
+          `${stray.length > 1 ? "them" : "it"} there.`);
       }
     }
 

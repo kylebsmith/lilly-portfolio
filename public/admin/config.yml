@@ -56,11 +56,16 @@ output:
   # truthiness. (The EXIF fallback is controlled explicitly by the
   # `use_file_details` switch instead.)
   #
-  # Meanwhile omitting empty keys actively broke removal. Clearing the images
-  # out of a piece wrote an empty list, this dropped the key entirely, and
-  # build-manifest reads a MISSING `gallery` as "publish everything on disk" -
-  # so emptying the box brought every picture back. Keeping the key means an
-  # empty list reads as the empty list it is.
+  # NOTE: this flag does NOT by itself fix clearing a list, and an earlier
+  # comment here wrongly claimed it did. The multiple image/file field never
+  # writes an empty list at all: each item is stored under its own numbered key
+  # (gallery.0, gallery.1), and removing the last one deletes that key and
+  # leaves nothing. So the flag is never even consulted for a cleared field.
+  #
+  # It is kept false for a narrower reason: so that a `gallery: []` already
+  # present in a file survives her next save. The actual fix for clearing lives
+  # in build-manifest.mjs, which treats a missing list on an EDITOR-MANAGED file
+  # (one carrying `use_file_details`) as "she removed them all".
   omit_empty_optional_fields: false
   yaml:
     # [LB] 'none' still auto-quotes anything ambiguous (yes/no/true/12:30/

@@ -125,6 +125,23 @@ const CASES = [
   { n: "43-clips-absent-legacy",     meta: null, images: 1, clips: ["a-first.mp4"],
     metaAfter: "title: Legacy Clips\ncategory: environments\n",
     expect: (p) => p && p.videos.filter(v => !v.embed).length === 1 },
+  // ── The editor cannot write an empty list, so on an editor-managed file a
+  //    MISSING list means "she removed them all" (use_file_details is the marker) ──
+  { n: "44-managed-missing-gallery", meta: "title: Managed\ncategory: environments\ncover: cover.jpg\nuse_file_details: true\n", images: 3,
+    expect: (p) => p && p.images.length === 1 },
+  { n: "45-managed-missing-clips",   meta: null, images: 1, clips: ["a-first.mp4"],
+    metaAfter: "title: Managed Clips\ncategory: environments\nuse_file_details: true\n",
+    expect: (p) => p && p.videos.filter(v => !v.embed).length === 0 },
+  { n: "46-unmanaged-keeps-all",     meta: "title: Legacy File\ncategory: environments\ncover: cover.jpg\n", images: 3,
+    expect: (p) => p && p.images.length === 3 },
+  // The marker must be ignored when the LEGACY parser produced it: that parser
+  // cannot read a block list, so one unquoted colon would look "managed with no
+  // gallery" and silently destroy the whole gallery.
+  { n: "47-legacy-parser-ignores-marker", meta: null, images: 3,
+    metaAfter: "title: Girl: A Study\ncategory: environments\ncover: cover.jpg\nuse_file_details: true\ngallery:\n  - img-1.jpg\n",
+    expect: (p) => p && p.images.length === 2 },
+  { n: "48-bare-gallery-key",        meta: "title: Bare List\ncategory: environments\ncover: cover.jpg\ngallery:\n", images: 3,
+    expect: (p) => p && p.images.length === 1 },
   { n: "34-corrupt-image",      meta: "title: Corrupt\ncategory: environments\n", images: 1, corrupt: true,
     expect: null /* hard error, named */, skipBatch: true },
   { n: "35-duplicate-slug",     meta: "title: Book Spots\ncategory: environments\n", images: 1, forceSlug: "book-spots",

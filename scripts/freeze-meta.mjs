@@ -83,6 +83,16 @@ for (const p of projects) {
   const added = [];
   const next = { ...existing };
 
+  // NEVER refill a list on a file the editor has written.
+  //
+  // Sveltia cannot store an empty list — removing the last item deletes the
+  // last numbered key and leaves nothing — so on an editor-managed file a
+  // MISSING `gallery` means "she removed them all", not "never set". Backfilling
+  // from disk here reversed two of her deliberate deletions and put the images
+  // back on her site. `use_file_details` is required:true in the CMS config, so
+  // its presence is a reliable marker that this file came from the editor.
+  const cmsManaged = Object.prototype.hasOwnProperty.call(existing, "use_file_details");
+
   // Derived values, taken from what the manifest already computed so the
   // rendered site cannot change.
   if (next.order === undefined || next.order === null || next.order === "") {
@@ -101,7 +111,7 @@ for (const p of projects) {
   // Without this the CMS's "More images" box opens EMPTY next to a project
   // that plainly has 29 pictures — which teaches her the editor is not showing
   // her the truth, the first time she opens it.
-  if (next.gallery === undefined || next.gallery === null) {
+  if (!cmsManaged && (next.gallery === undefined || next.gallery === null)) {
     const rest = (p.images ?? []).slice(1).map((i) => i.src.split("/").pop());
     if (rest.length > 0) {
       next.gallery = rest;
@@ -109,7 +119,7 @@ for (const p of projects) {
     }
   }
 
-  if (next.clips === undefined || next.clips === null) {
+  if (!cmsManaged && (next.clips === undefined || next.clips === null)) {
     const local = (p.videos ?? [])
       .filter((v) => !v.embed)
       .map((v) => v.src.split("/").pop());
